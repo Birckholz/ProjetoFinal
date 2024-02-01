@@ -8393,19 +8393,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\CLIENTE\\.nuget\\packages\\": {}
+    "C:\\Users\\adria\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\CLIENTE\\Documents\\Trabalhos\\Independente\\Volvo-Stuff\\ProjetoFinal\\ProjetoFinal.csproj",
+      "projectUniqueName": "C:\\Users\\adria\\OneDrive\\Documentos\\GitHub\\ProjetoFinal\\ProjetoFinal.csproj",
       "projectName": "ProjetoFinal",
-      "projectPath": "C:\\Users\\CLIENTE\\Documents\\Trabalhos\\Independente\\Volvo-Stuff\\ProjetoFinal\\ProjetoFinal.csproj",
-      "packagesPath": "C:\\Users\\CLIENTE\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\CLIENTE\\Documents\\Trabalhos\\Independente\\Volvo-Stuff\\ProjetoFinal\\obj\\",
+      "projectPath": "C:\\Users\\adria\\OneDrive\\Documentos\\GitHub\\ProjetoFinal\\ProjetoFinal.csproj",
+      "packagesPath": "C:\\Users\\adria\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\adria\\OneDrive\\Documentos\\GitHub\\ProjetoFinal\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\CLIENTE\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\adria\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -8475,7 +8475,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

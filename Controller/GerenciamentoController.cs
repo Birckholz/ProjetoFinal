@@ -6,11 +6,7 @@ namespace ProjetoFinal
     public class ProjetoFinalController : Controller
     {
         //CRUD CARGO
-        [HttpGet("Cargo/{id}")]
-        public IActionResult Get_cargo(int id)
-        {
 
-        }
         //CRUD CLIENTE
         //CRUD DEPARTAMENTO
 
