@@ -15,7 +15,7 @@ namespace ProjetoFinal
         public virtual Departamento? fkCodDepartamento { get; set; }
         public int idCliente { get; set; }
         [ForeignKey("idCliente")]
-        public virtual Cliente? fkCodCliente { get; set; }
+        public virtual Cliente? fkCliente { get; set; }
         [MaxLength(100)]
         [Required]
         public string? nomeProjeto { get; set; }

@@ -11,6 +11,7 @@ public class ProjetoFinalContext : DbContext
     public DbSet<Departamento> departamentos { get; set; } = null!;
     public DbSet<Cargo> cargos { get; set; } = null!;
     public DbSet<Projeto> projetos { get; set; } = null!;
+    public DbSet<ProjetoFuncionario> funcionariosProjeto { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
