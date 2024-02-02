@@ -1,6 +1,8 @@
 
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ProjetoFinal;
 [ApiController]
@@ -10,6 +12,17 @@ public class ProjetoController : Controller
     [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}/{idFuncionario}")]
     public IActionResult addProjeto(int codDepartamento, int idCliente, string nomeProjeto, float valorProjeto, DateOnly dataEntregaProjeto)
     {
+        try
+        {
+            if (nomeProjeto.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Nome de projeto inválido.");
+            };
+        }
+        catch (ExceptionCustom e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
         var _context = new ProjetoFinalContext();
         _context.projetos.Add(new Projeto()
         {
