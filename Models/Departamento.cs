@@ -17,5 +17,12 @@ namespace ProjetoFinal
         [Required]
         public string? responsavelDepartamento { get; set; }
 
+        public ICollection<Funcionario> funcionariosDepartamento { get; set; }
+
+        public Departamento()
+        {
+            funcionariosDepartamento = new List<Funcionario>();
+        }
+
     }
 }

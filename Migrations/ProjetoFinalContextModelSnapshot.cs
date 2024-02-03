@@ -173,17 +173,14 @@ namespace ProjetoFinal.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("fkCodCargocodCargo")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("fkCodDepartamentocodDepartamento")
-                        .HasColumnType("int");
-
                     b.Property<string>("formacaoRelevanteFuncionario")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("idDepartamento")
+                    b.Property<int?>("idCargo")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("idDepartamento")
                         .HasColumnType("int");
 
                     b.Property<string>("modoTrabFuncionario")
@@ -211,9 +208,9 @@ namespace ProjetoFinal.Migrations
 
                     b.HasKey("codFuncionario");
 
-                    b.HasIndex("fkCodCargocodCargo");
+                    b.HasIndex("idCargo");
 
-                    b.HasIndex("fkCodDepartamentocodDepartamento");
+                    b.HasIndex("idDepartamento");
 
                     b.ToTable("funcionarios");
                 });
@@ -290,11 +287,15 @@ namespace ProjetoFinal.Migrations
                 {
                     b.HasOne("ProjetoFinal.Cargo", "fkCodCargo")
                         .WithMany()
-                        .HasForeignKey("fkCodCargocodCargo");
+                        .HasForeignKey("idCargo")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FkIdCargo");
 
                     b.HasOne("ProjetoFinal.Departamento", "fkCodDepartamento")
-                        .WithMany()
-                        .HasForeignKey("fkCodDepartamentocodDepartamento");
+                        .WithMany("funcionariosDepartamento")
+                        .HasForeignKey("idDepartamento")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FkIdDepartamento");
 
                     b.Navigation("fkCodCargo");
 
@@ -344,6 +345,11 @@ namespace ProjetoFinal.Migrations
             modelBuilder.Entity("ProjetoFinal.Cliente", b =>
                 {
                     b.Navigation("clienteProjetos");
+                });
+
+            modelBuilder.Entity("ProjetoFinal.Departamento", b =>
+                {
+                    b.Navigation("funcionariosDepartamento");
                 });
 
             modelBuilder.Entity("ProjetoFinal.Funcionario", b =>
