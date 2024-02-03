@@ -13,5 +13,8 @@ namespace ProjetoFinal
         [Required]
         public string? nomeCargo { get; set; }
         public float salarioBase { get; set; }
+        //public virtual ICollection<Funcionario> cargoFuncionarios { get; set; } = null!
+        //esta duplicando o cod de cargo no funcionario
+
     }
 }

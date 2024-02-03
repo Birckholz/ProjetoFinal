@@ -159,51 +159,67 @@ namespace ProjetoFinal
             try
             {
                 var _context = new ProjetoFinalContext();
-                Cliente? cliente = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
+                var cliente = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
                 if(cliente == null)
                 {
                     return NotFound("Não foi possivel encontrar o cliente.");
                 }
-                if (nome!=null && !string.IsNullOrWhiteSpace(nome))
-                {
-                    cliente.nomeCliente=nome;
+                if (nome != null){
+                    if( !string.IsNullOrWhiteSpace(nome))
+                    {
+                        cliente.nomeCliente=nome;
+                    }
+                    else{
+                        return BadRequest("O nome não pode ser vazio");
+                    }
                 }
-                if (nome!=null && string.IsNullOrWhiteSpace(nome))
-                {
-                    return BadRequest("O nome não pode ser nulo ou vazio");
+                if (telefone != null){
+                    if(telefoneValido(telefone))
+                    {
+                       cliente.telefoneCliente=telefone;
+                    }
+                    else{
+                        return BadRequest("O telefone não pode ser vazio");
+                    }
                 }
-                if (telefone !=null && telefoneValido(telefone))
-                {
-                    cliente.telefoneCliente=telefone;
+                if (email != null){
+                    if( !string.IsNullOrWhiteSpace(email))
+                    {
+                        cliente.emailCliente=email;
+                    }
+                    else{
+                        return BadRequest("O email não pode ser vazio");
+                    }
                 }
-                if (telefone !=null && !telefoneValido(telefone))
-                {
-                    return BadRequest("O telefone não pode ser nulo ou vazio");
-                }
-                if (email!= null && !string.IsNullOrWhiteSpace(email))
-                {
-                    cliente.emailCliente=email;
-                }
-                if (email!= null && string.IsNullOrWhiteSpace(email))
-                {
-                    return BadRequest("O email não pode ser nulo ou vazio");
-                }
-                if (endereco!=null && !string.IsNullOrWhiteSpace(endereco))
-                {
-                    cliente.enderecoCliente=endereco;
-                }
-                if (endereco!=null && string.IsNullOrWhiteSpace(endereco))
-                {
-                    return BadRequest("O endereco não pode ser nulo ou vazio");
+                if (endereco != null){
+                    if( !string.IsNullOrWhiteSpace(endereco))
+                    {
+                        cliente.enderecoCliente=endereco;
+                    }
+                    else{
+                        return BadRequest("O endereço não pode ser vazio");
+                    }
                 }
                 if(descricao!=null){
                     cliente.descricaoCliente=descricao;
                 }
-                if(cpf!=null && documentoValido(cpf)){
-                    cliente.PessFCPFCliente=cpf;
+                if (cpf != null){
+                    if(documentoValido(cpf))
+                    {
+                        cliente.PessFCPFCliente=cpf;
+                    }
+                    else{
+                        return BadRequest("O CPF não é válido");
+                    }
                 }
-                if (cnpj!=null && documentoValido(cnpj)){
-                    cliente.PessJCNPJCliente=cnpj;
+                if (cnpj != null){
+                    if(documentoValido(cnpj))
+                    {
+                        cliente.PessJCNPJCliente=cnpj;
+                    }
+                    else{
+                        return BadRequest("O CNPJ não é válido");
+                    }
                 }
                 if(status !=null){
                     cliente.statusCliente=status;

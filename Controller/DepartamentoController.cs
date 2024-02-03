@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProjetoFinal
 {
-    //refazer para vir por link , n por body e terminar validação
 
     [ApiController]
     [Route("[controller]")]
@@ -112,26 +111,26 @@ namespace ProjetoFinal
             try
             {
                 var _context= new ProjetoFinalContext();
-                Departamento? departamento=_context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
+                var departamento=_context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                 if (departamento == null)
                 {
                     return NotFound("Não foi possivel encontrar o departamento.");
                 }
-                if (nome!=null && !string.IsNullOrWhiteSpace(nome))
+                if (nome!=null)
                 {
-                    departamento.nomeDepartamento=nome;
+                    if(!string.IsNullOrWhiteSpace(nome)){
+                        departamento.nomeDepartamento=nome;
+                    }else{
+                        return BadRequest("O nome não pode ser vazio");
+                    }
                 }
-                if (nome!=null && string.IsNullOrWhiteSpace(nome))
+                if (responsavel!=null)
                 {
-                    return BadRequest("O nome não pode ser nulo ou vazio");
-                }
-                if (responsavel!=null && !string.IsNullOrWhiteSpace(responsavel))
-                {
-                    departamento.responsavelDepartamento=responsavel;
-                }
-                if (responsavel!=null && string.IsNullOrWhiteSpace(responsavel))
-                {
-                    return BadRequest("O responsavel não pode ser nulo ou vazio");
+                    if(!string.IsNullOrWhiteSpace(responsavel)){
+                        departamento.responsavelDepartamento=responsavel;
+                    }else{
+                       return BadRequest("O responsavel não pode ser vazio");
+                    }
                 }
                 _context.SaveChanges();
                 return new ObjectResult(departamento);

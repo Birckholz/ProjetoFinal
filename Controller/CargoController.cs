@@ -63,13 +63,15 @@ namespace ProjetoFinal
             }
         }
 
+//DUVIDA
+
         [HttpDelete("Delete/{idCargo}")]
         public IActionResult deleteCargo(int idCargo)
         {
             try{
                 using (var _context = new ProjetoFinalContext())
                 {
-                    //esses var precisam '?' pra se n achar o cargoNulo?
+ //esses var precisam '?' pra se n achar o cargoNulo?
                     var CargoNulo=_context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                     if(item == null)
@@ -95,23 +97,28 @@ namespace ProjetoFinal
         {
             try{
                 var _context = new ProjetoFinalContext();
-                Cargo? cargo = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
+                var cargo = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                 if(cargo == null)
                 {
                     return NotFound("Não foi possivel encontrar o cargo."); 
                 }
-                if (nome != null && !string.IsNullOrWhiteSpace(nome)){
-                    cargo.nomeCargo=nome;
+                if (nome != null){
+                    if( !string.IsNullOrWhiteSpace(nome))
+                    {
+                        cargo.nomeCargo=nome;
+                    }
+                    else{
+                        return BadRequest("O nome não pode ser vazio");
+                    }
                 }
-                if (nome != null && string.IsNullOrWhiteSpace(nome)){
-                    return BadRequest("O nome não pode ser vazio");
-                }
-                if (salario !=null && salario>0){
-                    float salario1=Convert.ToSingle(salario);
-                    cargo.salarioBase= salario1;
-                }
-                if (salario !=null && salario<=0){
-                    return BadRequest("O salário precisa ser maior que zero");
+                if (salario !=null ){
+                    if(salario>0){
+                        float salario1=Convert.ToSingle(salario);
+                        cargo.salarioBase= salario1;
+                    }
+                    else{
+                        return BadRequest("O salário precisa ser maior que zero");
+                    }
                 }
                 _context.SaveChanges();
                 return new ObjectResult(cargo);

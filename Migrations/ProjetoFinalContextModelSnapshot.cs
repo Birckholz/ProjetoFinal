@@ -164,6 +164,9 @@ namespace ProjetoFinal.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<int?>("CargocodCargo")
+                        .HasColumnType("int");
+
                     b.Property<string>("emailFuncionario")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -207,6 +210,8 @@ namespace ProjetoFinal.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("codFuncionario");
+
+                    b.HasIndex("CargocodCargo");
 
                     b.HasIndex("idCargo");
 
@@ -285,6 +290,10 @@ namespace ProjetoFinal.Migrations
 
             modelBuilder.Entity("ProjetoFinal.Funcionario", b =>
                 {
+                    b.HasOne("ProjetoFinal.Cargo", null)
+                        .WithMany("cargoFuncionarios")
+                        .HasForeignKey("CargocodCargo");
+
                     b.HasOne("ProjetoFinal.Cargo", "fkCodCargo")
                         .WithMany()
                         .HasForeignKey("idCargo")
@@ -340,6 +349,11 @@ namespace ProjetoFinal.Migrations
                     b.Navigation("fkFuncionario");
 
                     b.Navigation("fkProjeto");
+                });
+
+            modelBuilder.Entity("ProjetoFinal.Cargo", b =>
+                {
+                    b.Navigation("cargoFuncionarios");
                 });
 
             modelBuilder.Entity("ProjetoFinal.Cliente", b =>
