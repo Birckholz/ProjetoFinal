@@ -274,7 +274,7 @@ namespace ProjetoFinal.Migrations
 
                     b.HasIndex("idFuncionario");
 
-                    b.ToTable("ProjetoFuncionario");
+                    b.ToTable("funcionariosProjeto");
                 });
 
             modelBuilder.Entity("ProjetoFinal.ContaBancaria", b =>
@@ -309,13 +309,13 @@ namespace ProjetoFinal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjetoFinal.Cliente", "fkCodCliente")
-                        .WithMany()
+                    b.HasOne("ProjetoFinal.Cliente", "fkCliente")
+                        .WithMany("clienteProjetos")
                         .HasForeignKey("idCliente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("fkCodCliente");
+                    b.Navigation("fkCliente");
 
                     b.Navigation("fkCodDepartamento");
                 });
@@ -339,6 +339,11 @@ namespace ProjetoFinal.Migrations
                     b.Navigation("fkFuncionario");
 
                     b.Navigation("fkProjeto");
+                });
+
+            modelBuilder.Entity("ProjetoFinal.Cliente", b =>
+                {
+                    b.Navigation("clienteProjetos");
                 });
 
             modelBuilder.Entity("ProjetoFinal.Funcionario", b =>

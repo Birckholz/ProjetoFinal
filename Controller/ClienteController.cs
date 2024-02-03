@@ -3,37 +3,83 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProjetoFinal
 {
-    //refazer para vir por link , n por body e terminar validação
     [ApiController]
     [Route("[controller]")]
     public class ClienteController : Controller
     {
-        [HttpPost("Add")]
-        public IActionResult postCliente([FromBody] Cliente cliente)
+        bool telefoneValido(string telefone)
+        {
+            foreach (char caractere in telefone)
+            {
+                if (!char.IsDigit(caractere) &&
+                    caractere != ' ' &&
+                    caractere != '-' &&
+                    caractere != '+' &&
+                    caractere != '(' &&
+                    caractere != ')')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        bool documentoValido(string valor){//para validar cpf e cnpj
+            foreach (char caractere in valor)
+            {
+                if (!char.IsDigit(caractere) &&
+                    caractere != ' ' &&
+                    caractere != '-' &&
+                    caractere != '.'&&
+                    caractere !='/')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    //como tem atributos opcionais, será por query o Add + path os obrigatorios
+        [HttpPost("Add/{nome}/{telefone}/{email}/{endereco}")]
+        public IActionResult postCliente(string nome,string telefone,string email,string endereco,string? descricao, string? cpf,string? cnpj,string? status)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(cliente.nomeCliente))
+                if (string.IsNullOrWhiteSpace(nome))
                 {
                     return BadRequest("O nome não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.telefoneCliente))
+                if (!telefoneValido(telefone))
                 {
-                    return BadRequest("O telefone não pode ser nulo ou vazio");
+                    return BadRequest("O telefone fornecido não é válido");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.emailCliente))
+                if (string.IsNullOrWhiteSpace(email))
                 {
                     return BadRequest("O email não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.enderecoCliente))
+                if (string.IsNullOrWhiteSpace(endereco))
                 {
                     return BadRequest("O endereco não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.PessJCNPJCliente) && string.IsNullOrWhiteSpace(cliente.PessFCPFCliente))
+                if (string.IsNullOrWhiteSpace(cpf) && string.IsNullOrWhiteSpace(cnpj))
                 {
                     return BadRequest("O cliente precisa de CPF ou CNPJ");
                 }
-
+                if(cpf!=null && !documentoValido(cpf)){
+                    return BadRequest("O CPF não é válido");
+                }
+                if(cnpj!=null && !documentoValido(cnpj)){
+                    return BadRequest("O CNPJ não é válido");
+                }
+                Cliente cliente =new Cliente(){
+                    nomeCliente=nome,
+                    telefoneCliente=telefone,
+                    emailCliente=email,
+                    enderecoCliente=endereco,
+                    descricaoCliente=descricao,
+                    PessFCPFCliente=cpf,
+                    PessJCNPJCliente=cnpj,
+                    statusCliente=status
+                };
                 using (var _context = new ProjetoFinalContext())
                 {
                     _context.clientes.Add(cliente);
@@ -56,13 +102,13 @@ namespace ProjetoFinal
         }
 
         [HttpGet("GetById/{idCliente}")]
-        public IActionResult getCliente(int id)
+        public IActionResult getCliente(int idCliente)
         {
             try
             {
                 using (var _context = new ProjetoFinalContext())
                 {
-                    var item = _context.clientes.FirstOrDefault(y => y.codCliente == id);
+                    var item = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
                     if (item == null)
                     {
                         return NotFound("Não foi possivel encontrar o cliente.");
@@ -77,21 +123,21 @@ namespace ProjetoFinal
         }
 
         [HttpDelete("Delete/{idCliente}")]
-        public IActionResult deleteCliente(int id)
+        public IActionResult deleteCliente(int idCliente)
         {
             try
             {
                 using (var _context = new ProjetoFinalContext())
                 {
                     var ClienteNulo = _context.clientes.FirstOrDefault(x => x.nomeCliente == "Cliente excluido");
-                    var item = _context.clientes.FirstOrDefault(y => y.codCliente == id);
+                    var item = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
                     if (item == null)
                     {
                         return NotFound("Não foi possivel encontrar o cliente.");
                     }
                     foreach (Projeto projeto in _context.projetos)
                     {
-                        if (projeto.idCliente == id && ClienteNulo != null)
+                        if (projeto.idCliente == idCliente && ClienteNulo != null)
                         {
                             projeto.idCliente = ClienteNulo.codCliente;
                         }
@@ -108,41 +154,66 @@ namespace ProjetoFinal
         }
 
         [HttpPut("Update/{idCliente}")]
-        public IActionResult putCliente(int id, [FromBody] Cliente cliente)
+        public IActionResult putCliente(int idCliente, string? nome,string? telefone,string? email,string? endereco,string? descricao, string? cpf,string? cnpj,string? status)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(cliente.nomeCliente))
+                var _context = new ProjetoFinalContext();
+                Cliente? cliente = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
+                if(cliente == null)
+                {
+                    return NotFound("Não foi possivel encontrar o cliente.");
+                }
+                if (nome!=null && !string.IsNullOrWhiteSpace(nome))
+                {
+                    cliente.nomeCliente=nome;
+                }
+                if (nome!=null && string.IsNullOrWhiteSpace(nome))
                 {
                     return BadRequest("O nome não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.telefoneCliente))
+                if (telefone !=null && telefoneValido(telefone))
+                {
+                    cliente.telefoneCliente=telefone;
+                }
+                if (telefone !=null && !telefoneValido(telefone))
                 {
                     return BadRequest("O telefone não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.emailCliente))
+                if (email!= null && !string.IsNullOrWhiteSpace(email))
+                {
+                    cliente.emailCliente=email;
+                }
+                if (email!= null && string.IsNullOrWhiteSpace(email))
                 {
                     return BadRequest("O email não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.enderecoCliente))
+                if (endereco!=null && !string.IsNullOrWhiteSpace(endereco))
+                {
+                    cliente.enderecoCliente=endereco;
+                }
+                if (endereco!=null && string.IsNullOrWhiteSpace(endereco))
                 {
                     return BadRequest("O endereco não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(cliente.PessJCNPJCliente) && string.IsNullOrWhiteSpace(cliente.PessFCPFCliente))
+                if(descricao!=null){
+                    cliente.descricaoCliente=descricao;
+                }
+                if(cpf!=null && documentoValido(cpf)){
+                    cliente.PessFCPFCliente=cpf;
+                }
+                if (cnpj!=null && documentoValido(cnpj)){
+                    cliente.PessJCNPJCliente=cnpj;
+                }
+                if(status !=null){
+                    cliente.statusCliente=status;
+                }
+                if (string.IsNullOrWhiteSpace(cliente.PessFCPFCliente) && string.IsNullOrWhiteSpace(cliente.PessJCNPJCliente))
                 {
                     return BadRequest("O cliente precisa de CPF ou CNPJ");
                 }
-                using (var _context = new ProjetoFinalContext())
-                {
-                    var item = _context.clientes.FirstOrDefault(y => y.codCliente == id);
-                    if (item == null)
-                    {
-                        return NotFound("Não foi possivel encontrar o cliente.");
-                    }
-                    _context.Entry(item).CurrentValues.SetValues(cliente);
-                    _context.SaveChanges();
-                    return new ObjectResult(item);
-                }
+                _context.SaveChanges();
+                return new ObjectResult(cliente);
             }
             catch (Exception e)
             {

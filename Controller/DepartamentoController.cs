@@ -9,19 +9,23 @@ namespace ProjetoFinal
     [Route("[controller]")]
     public class DepartamentoController : Controller
     {
-        [HttpPost("Add")]
-        public IActionResult postDepartamento([FromBody] Departamento departamento)
+        [HttpPost("Add{nome}/{responsavel}")]
+        public IActionResult postDepartamento(string nome,string responsavel)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(departamento.nomeDepartamento))
+                if (string.IsNullOrWhiteSpace(nome))
                 {
                     return BadRequest("O nome não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(departamento.responsavelDepartamento))
+                if (string.IsNullOrWhiteSpace(responsavel))
                 {
                     return BadRequest("O responsável não pode ser nulo ou vazio");
                 }
+                Departamento departamento=new Departamento(){
+                    nomeDepartamento=nome,
+                    responsavelDepartamento=responsavel
+                };
                 using (var _context = new ProjetoFinalContext())
                 {
                     _context.departamentos.Add(departamento);
@@ -44,13 +48,13 @@ namespace ProjetoFinal
         }
 
         [HttpGet("GetById/{idDepartamento}")]
-        public IActionResult getDepartamento(int id)
+        public IActionResult getDepartamento(int idDepartamento)
         {
             try
             {
                 using (var _context = new ProjetoFinalContext())
                 {
-                    var item = _context.departamentos.FirstOrDefault(y => y.codDepartamento == id);
+                    var item = _context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                     if (item == null)
                     {
                         return NotFound("Não foi possivel encontrar o departamento.");
@@ -65,28 +69,28 @@ namespace ProjetoFinal
         }
 
         [HttpDelete("Delete/{idDepartamento}")]
-        public IActionResult deleteDepartamento(int id)
+        public IActionResult deleteDepartamento(int idDepartamento)
         {
             try
             {
                 using (var _context = new ProjetoFinalContext())
                 {
                     var DepartamentoNulo = _context.departamentos.FirstOrDefault(x => x.nomeDepartamento == "Departamento nao definido");
-                    var item = _context.departamentos.FirstOrDefault(y => y.codDepartamento == id);
+                    var item = _context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                     if (item == null)
                     {
                         return NotFound("Não foi possivel encontrar o departamento.");
                     }
                     foreach (Projeto projeto in _context.projetos)
                     {
-                        if (projeto.codDepartamento == id && DepartamentoNulo != null)
+                        if (projeto.codDepartamento == idDepartamento && DepartamentoNulo != null)
                         {
                             projeto.codDepartamento = DepartamentoNulo.codDepartamento;
                         }
                     }
                     foreach (Funcionario funcionario in _context.funcionarios)
                     {
-                        if (funcionario.idDepartamento == id && DepartamentoNulo != null)
+                        if (funcionario.idDepartamento == idDepartamento && DepartamentoNulo != null)
                         {
                             funcionario.idDepartamento = DepartamentoNulo.codDepartamento;
                         }
@@ -103,29 +107,34 @@ namespace ProjetoFinal
         }
 
         [HttpPut("Update/{idDepartamento}")]
-        public IActionResult putDepartamento(int id, [FromBody] Departamento departamento)
+        public IActionResult putDepartamento(int idDepartamento, string? nome, string? responsavel)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(departamento.nomeDepartamento))
+                var _context= new ProjetoFinalContext();
+                Departamento? departamento=_context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
+                if (departamento == null)
+                {
+                    return NotFound("Não foi possivel encontrar o departamento.");
+                }
+                if (nome!=null && !string.IsNullOrWhiteSpace(nome))
+                {
+                    departamento.nomeDepartamento=nome;
+                }
+                if (nome!=null && string.IsNullOrWhiteSpace(nome))
                 {
                     return BadRequest("O nome não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(departamento.responsavelDepartamento))
+                if (responsavel!=null && !string.IsNullOrWhiteSpace(responsavel))
                 {
-                    return BadRequest("O responsável não pode ser nulo ou vazio");
+                    departamento.responsavelDepartamento=responsavel;
                 }
-                using (var _context = new ProjetoFinalContext())
+                if (responsavel!=null && string.IsNullOrWhiteSpace(responsavel))
                 {
-                    var item = _context.departamentos.FirstOrDefault(y => y.codDepartamento == id);
-                    if (item == null)
-                    {
-                        return NotFound("Não foi possivel encontrar o departamento.");
-                    }
-                    _context.Entry(item).CurrentValues.SetValues(departamento);
-                    _context.SaveChanges();
-                    return new ObjectResult(item);
+                    return BadRequest("O responsavel não pode ser nulo ou vazio");
                 }
+                _context.SaveChanges();
+                return new ObjectResult(departamento);
             }
             catch (Exception e)
             {

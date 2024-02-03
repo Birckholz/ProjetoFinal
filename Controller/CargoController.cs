@@ -12,16 +12,20 @@ namespace ProjetoFinal
 
         // criar direto no banco o nulo
         
-        [HttpPost("Add")]
-        public IActionResult postCargo([FromBody] Cargo cargo)
+        [HttpPost("Add/{nome}/{salario}")]
+        public IActionResult postCargo(string nome,float salario)
         {
             try{
-                if (string.IsNullOrWhiteSpace(cargo.nomeCargo)){
+                if (string.IsNullOrWhiteSpace(nome)){
                     return BadRequest("O nome não pode ser nulo ou vazio");
                 }
-                if (cargo.salarioBase<=0){
+                if (salario<=0){
                     return BadRequest("O salário precisa ser maior que zero");
                 }
+                Cargo cargo =new Cargo(){
+                    nomeCargo=nome,
+                    salarioBase=salario
+                };
                 using (var _context = new ProjetoFinalContext())
                 {
                     _context.cargos.Add(cargo);
@@ -42,12 +46,12 @@ namespace ProjetoFinal
         }
 
         [HttpGet("GetById/{idCargo}")]
-        public IActionResult getCargo(int id)
+        public IActionResult getCargo(int idCargo)
         {
             try{
                 using (var _context = new ProjetoFinalContext())
                 {
-                    var item = _context.cargos.FirstOrDefault(y => y.codCargo == id);
+                    var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                     if(item == null)
                     {
                         return NotFound("Não foi possivel encontrar o cargo."); 
@@ -60,19 +64,20 @@ namespace ProjetoFinal
         }
 
         [HttpDelete("Delete/{idCargo}")]
-        public IActionResult deleteCargo(int id)
+        public IActionResult deleteCargo(int idCargo)
         {
             try{
                 using (var _context = new ProjetoFinalContext())
                 {
+                    //esses var precisam '?' pra se n achar o cargoNulo?
                     var CargoNulo=_context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");
-                    var item = _context.cargos.FirstOrDefault(y => y.codCargo == id);
+                    var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                     if(item == null)
                     {
                         return NotFound("Não foi possivel encontrar o cargo."); 
                     }
                     foreach (Funcionario funcionario in _context.funcionarios){
-                        if (funcionario.idCargo==id && CargoNulo!=null){
+                        if (funcionario.idCargo==idCargo && CargoNulo!=null){
                             funcionario.idCargo=CargoNulo.codCargo;
                         }
                     }
@@ -86,26 +91,30 @@ namespace ProjetoFinal
         }
 
         [HttpPut("Update/{idCargo}")]
-        public IActionResult putCargo(int id,[FromBody] Cargo cargo)
+        public IActionResult putCargo(int idCargo,string? nome, float?salario)
         {
             try{
-                if (string.IsNullOrWhiteSpace(cargo.nomeCargo)){
-                    return BadRequest("O nome não pode ser nulo ou vazio");
+                var _context = new ProjetoFinalContext();
+                Cargo? cargo = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
+                if(cargo == null)
+                {
+                    return NotFound("Não foi possivel encontrar o cargo."); 
                 }
-                if (cargo.salarioBase<=0){
+                if (nome != null && !string.IsNullOrWhiteSpace(nome)){
+                    cargo.nomeCargo=nome;
+                }
+                if (nome != null && string.IsNullOrWhiteSpace(nome)){
+                    return BadRequest("O nome não pode ser vazio");
+                }
+                if (salario !=null && salario>0){
+                    float salario1=Convert.ToSingle(salario);
+                    cargo.salarioBase= salario1;
+                }
+                if (salario !=null && salario<=0){
                     return BadRequest("O salário precisa ser maior que zero");
                 }
-                using (var _context = new ProjetoFinalContext())
-                {
-                    var item = _context.cargos.FirstOrDefault(y => y.codCargo == id);
-                    if(item == null)
-                    {
-                        return NotFound("Não foi possivel encontrar o cargo."); 
-                    }
-                    _context.Entry(item).CurrentValues.SetValues(cargo);
-                    _context.SaveChanges();
-                    return new ObjectResult(item);
-                }
+                _context.SaveChanges();
+                return new ObjectResult(cargo);
             }catch(Exception e){
                 return BadRequest(e.Message);                 
             }

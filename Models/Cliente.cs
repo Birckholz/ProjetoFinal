@@ -29,5 +29,7 @@ namespace ProjetoFinal
         public string? PessJCNPJCliente { get; set; }//pessoa juridica
         [MaxLength(20)]
         public string? statusCliente { get; set; }
+        public virtual ICollection<Projeto> clienteProjetos { get; set; } = null!;
+
     }
 }
