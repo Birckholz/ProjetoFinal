@@ -98,7 +98,7 @@ namespace ProjetoFinal
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
                 // Nome do arquivo que será criado na pasta Downloads
                 string arquivo = "Departamento_Projetos.txt";
-                // Caminho completo do arquivo na pasta Downloads
+                // garante que os caracteres de separação de diretório sejam tratados corretamente
                 string pathCompleto = Path.Combine(path, arquivo);
 
                 // Utiliza o StreamWriter para escrever no arquivo
@@ -137,7 +137,6 @@ namespace ProjetoFinal
                 // Utiliza o StreamWriter para escrever no arquivo
                 using (StreamWriter sw = new StreamWriter(pathCompleto))
                 {
-                    //Lógica para achar departamento e projetos
                     sw.Write(arquivoProjFuncio(texto, funcionario));
                 }
                 return Ok("O arquivo foi criado na pasta de dowloads");

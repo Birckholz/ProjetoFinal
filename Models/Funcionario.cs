@@ -13,7 +13,7 @@ namespace ProjetoFinal
 
 
         public int? idCargo { get; set; }
-        [ForeignKey("idCargo")]
+       // [ForeignKey("idCargo")] removi pois coloquei uma lista em cargo,para varios funcionarios poderem ter o mesmo cargo, e assim nao duplicava a chave de cargo
 
         public virtual Cargo? fkCodCargo { get; set; }
 

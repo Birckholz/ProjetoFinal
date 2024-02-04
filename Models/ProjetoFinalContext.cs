@@ -16,8 +16,8 @@ public class ProjetoFinalContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //Não esquecer de mudar Server= ao clonar
-        optionsBuilder.UseSqlServer(@"Server=GUILHERME2943\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
-        // optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        //optionsBuilder.UseSqlServer(@"Server=GUILHERME2943\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,10 +45,10 @@ public class ProjetoFinalContext : DbContext
             .HasForeignKey(f => f.idDepartamento)
             .OnDelete(DeleteBehavior.SetNull)
             .HasConstraintName("FkIdDepartamento");
-
+//mudança para conseguir ter varios funcionarios com mesmo cargo
         modelBuilder.Entity<Funcionario>()
             .HasOne(f => f.fkCodCargo)
-            .WithMany()
+            .WithMany(d => d.funcionarioCargos)
             .HasForeignKey(f => f.idCargo)
             .OnDelete(DeleteBehavior.SetNull)
             .HasConstraintName("FkIdCargo");
