@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -8,12 +9,23 @@ namespace ProjetoFinal;
 [Route("[controller]")]
 public class ContaBancariaController : Controller
 {
+    private bool funcionarioValido(int idFuncionario)
+    {
+        var _context = new ProjetoFinalContext();
+        Funcionario? entityCheck = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
+        return entityCheck != null;
+    }
+
     [HttpPost("Add/{codFuncionario}/{agenciaContaB}/{numeroContaB}/{tipoContaB}")]
     public IActionResult addContaBancaria(int codFuncionario, string agenciaContaB, string numeroContaB, string tipoContaB)
     {
         var _context = new ProjetoFinalContext();
         try
         {
+            if (!funcionarioValido(codFuncionario))
+            {
+                throw new ExceptionCustom("Funcionario não encontrado");
+            }
             if (agenciaContaB.IsNullOrEmpty())
             {
                 throw new ExceptionCustom("Conta bancaria invalida");
@@ -33,13 +45,20 @@ public class ContaBancariaController : Controller
                 numeroContaB = numeroContaB,
                 tipoContaB = tipoContaB
             });
+            _context.SaveChanges();
+            return Ok("Dados Inseridos");
         }
         catch (ExceptionCustom e)
         {
             System.Console.WriteLine(e.Message);
+            return NotFound(e.Message);
         }
-        _context.SaveChanges();
-        return Ok("Dados Inseridos");
+        catch (Exception t)
+        {
+            System.Console.WriteLine(t.Message);
+            return BadRequest(t.Message);
+        }
+
     }
 
     [HttpPut("Update/{codFuncionario}")]
@@ -47,8 +66,12 @@ public class ContaBancariaController : Controller
     {
         var _context = new ProjetoFinalContext();
         ContaBancaria? entityUpdate = _context.contasBancarias.FirstOrDefault(cb => cb.codFuncionario == codFuncionario);
-        if (entityUpdate != null)
+        try
         {
+            if (entityUpdate == null)
+            {
+                throw new ExceptionCustom("Conta bancaria não encontrada");
+            }
             if (agenciaContaB != null)
             {
                 entityUpdate.agenciaContaB = agenciaContaB;
@@ -61,40 +84,94 @@ public class ContaBancariaController : Controller
             {
                 entityUpdate.tipoContaB = tipoContaB;
             }
+            _context.SaveChanges();
             return Ok("Funcionario removido do Projeto com sucesso.");
         }
-        return NotFound("Não foi possivel encontrar esse registro.");
+        catch (ExceptionCustom e)
+        {
+            System.Console.WriteLine(e.Message);
+            return NotFound(e.Message);
+        }
+        catch (Exception t)
+        {
+            System.Console.WriteLine(t.Message);
+            return BadRequest(t.Message);
+        }
+
     }
     [HttpGet("Get")]
     public IActionResult getContasBancarias()
     {
-        var _context = new ProjetoFinalContext();
-        DbSet<ContaBancaria> retorno = _context.contasBancarias;
-        return Ok(retorno);
+        try
+        {
+            var _context = new ProjetoFinalContext();
+            DbSet<ContaBancaria> retorno = _context.contasBancarias;
+            if (!retorno.Any())
+            {
+                throw new ExceptionCustom("Não a nenuma conta cadastrada");
+            }
+            return Ok(retorno);
+        }
+        catch (ExceptionCustom e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
+        catch (Exception t)
+        {
+            System.Console.WriteLine(t.Message);
+            return BadRequest(t.Message);
+        }
     }
 
     [HttpGet("GetById/{codContaB}")]
     public IActionResult getContaBancById(int codContaB)
     {
-        var _context = new ProjetoFinalContext();
-        ContaBancaria? entityGet = _context.contasBancarias.FirstOrDefault(bc => bc.codContaB == codContaB);
-        if (entityGet != null)
+        try
         {
+            var _context = new ProjetoFinalContext();
+            ContaBancaria? entityGet = _context.contasBancarias.FirstOrDefault(bc => bc.codContaB == codContaB);
+            if (entityGet == null)
+            {
+                throw new ExceptionCustom("Conta Bancaria não encontrado");
+            }
             return Ok(entityGet);
         }
-        return NotFound("Projeto não encontrado.");
+        catch (ExceptionCustom e)
+        {
+            System.Console.WriteLine(e.Message);
+            return NotFound(e.Message);
+        }
+        catch (Exception t)
+        {
+            System.Console.WriteLine(t.Message);
+            return BadRequest(t.Message);
+        }
     }
 
     [HttpDelete("Delete/{codContaB}")]
     public IActionResult removerContaBanc(int codContaB)
     {
-        var _context = new ProjetoFinalContext();
-        ContaBancaria? entityRemove = _context.contasBancarias.FirstOrDefault(bc => bc.codContaB == codContaB);
-        if (entityRemove != null)
+        try
         {
+            var _context = new ProjetoFinalContext();
+            ContaBancaria? entityRemove = _context.contasBancarias.FirstOrDefault(bc => bc.codContaB == codContaB);
+            if (entityRemove == null)
+            {
+                throw new ExceptionCustom("Conta Bancaria não encontrada");
+            }
             _context.contasBancarias.Remove(entityRemove);
             return Ok("Conta Bancaria removido com sucesso.");
         }
-        return NotFound("Não foi possivel encontrar o projeto.");
+        catch (ExceptionCustom e)
+        {
+            System.Console.WriteLine(e.Message);
+            return NotFound(e.Message);
+        }
+        catch (Exception t)
+        {
+            System.Console.WriteLine(t.Message);
+            return NotFound(t.Message);
+        }
     }
 }

@@ -108,9 +108,6 @@ namespace ProjetoFinal.Migrations
                     b.Property<int>("codFuncionario")
                         .HasColumnType("int");
 
-                    b.Property<int?>("fkCodFuncionariocodFuncionario")
-                        .HasColumnType("int");
-
                     b.Property<string>("numeroContaB")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -123,7 +120,7 @@ namespace ProjetoFinal.Migrations
 
                     b.HasKey("codContaB");
 
-                    b.HasIndex("fkCodFuncionariocodFuncionario");
+                    b.HasIndex("codFuncionario");
 
                     b.ToTable("contasBancarias");
                 });
@@ -163,6 +160,9 @@ namespace ProjetoFinal.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<int?>("CargocodCargo")
+                        .HasColumnType("int");
 
                     b.Property<string>("emailFuncionario")
                         .IsRequired()
@@ -207,6 +207,8 @@ namespace ProjetoFinal.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("codFuncionario");
+
+                    b.HasIndex("CargocodCargo");
 
                     b.HasIndex("idCargo");
 
@@ -278,15 +280,21 @@ namespace ProjetoFinal.Migrations
                 {
                     b.HasOne("ProjetoFinal.Funcionario", "fkCodFuncionario")
                         .WithMany()
-                        .HasForeignKey("fkCodFuncionariocodFuncionario");
+                        .HasForeignKey("codFuncionario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("fkCodFuncionario");
                 });
 
             modelBuilder.Entity("ProjetoFinal.Funcionario", b =>
                 {
-                    b.HasOne("ProjetoFinal.Cargo", "fkCodCargo")
+                    b.HasOne("ProjetoFinal.Cargo", null)
                         .WithMany("funcionarioCargos")
+                        .HasForeignKey("CargocodCargo");
+
+                    b.HasOne("ProjetoFinal.Cargo", "fkCodCargo")
+                        .WithMany()
                         .HasForeignKey("idCargo")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FkIdCargo");

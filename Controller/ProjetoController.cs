@@ -9,9 +9,20 @@ namespace ProjetoFinal;
 [Route("[controller]")]
 public class ProjetoController : Controller
 {
-    //bia: erro , não precisa de id funcionário, tirei para testar
-    // [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}/{idFuncionario}")]
-    //Guilherme: Não sei pq tava ai eu nem coloquei na chamada do metodo
+    private bool departamentoValido(int idDepartamento)
+    {
+        var _context = new ProjetoFinalContext();
+        Departamento? entityCheck = _context.departamentos.FirstOrDefault(d => d.codDepartamento == idDepartamento);
+        return entityCheck != null;
+    }
+
+    private bool clienteValido(int idCliente)
+    {
+        var _context = new ProjetoFinalContext();
+        Cliente? entityCheck = _context.clientes.FirstOrDefault(c => c.codCliente == idCliente);
+        return entityCheck != null;
+    }
+
     [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}")]
 
     public IActionResult addProjeto(int codDepartamento, int idCliente, string nomeProjeto, float valorProjeto, DateOnly dataEntregaProjeto)
@@ -24,6 +35,16 @@ public class ProjetoController : Controller
             {
                 throw new ExceptionCustom("Nome de projeto inválido.");
             };
+
+            if (!clienteValido(idCliente))
+            {
+                throw new ExceptionCustom("Cliente não existe");
+            }
+
+            if (!departamentoValido(codDepartamento))
+            {
+                throw new ExceptionCustom("Cliente não existe");
+            }
             _context.projetos.Add(new Projeto()
             {
                 codDepartamento = codDepartamento,
@@ -33,55 +54,114 @@ public class ProjetoController : Controller
                 valorProjeto = valorProjeto,
                 dataEntregaProjeto = dataEntregaProjeto
             });
+            _context.SaveChanges();
+            return Ok("Dados Inseridos");
         }
         catch (ExceptionCustom e)
         {
             System.Console.WriteLine(e.Message);
+            return NotFound(e.Message);
+        }
+        catch (Exception t)
+        {
+            System.Console.WriteLine(t.Message);
+            return BadRequest(t.Message);
+
         }
 
-        _context.SaveChanges();
-        return Ok("Dados Inseridos");
+
     }
     [HttpGet("Get")]
     public IActionResult getProjetos()
     {
-        var _context = new ProjetoFinalContext();
-        DbSet<Projeto> retorno = _context.projetos;
-        return Ok(retorno);
+        try
+        {
+            var _context = new ProjetoFinalContext();
+            DbSet<Projeto> retorno = _context.projetos;
+            if (!retorno.Any())
+            {
+                throw new ExceptionCustom("Não ha projetos cadastrados");
+            }
+            return Ok(retorno);
+        }
+        catch (ExceptionCustom t)
+        {
+            System.Console.WriteLine(t.Message);
+            return NotFound(t.Message);
+        }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
+
     }
 
     [HttpGet("GetById/{idProjeto}")]
     public IActionResult getProjById(int idProjeto)
     {
-        var _context = new ProjetoFinalContext();
-        Projeto? entityGet = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
-        if (entityGet != null)
+        try
         {
-            return Ok(entityGet);
+            var _context = new ProjetoFinalContext();
+            Projeto? entityGet = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
+            if (entityGet != null)
+            {
+                return Ok(entityGet);
+
+            }
+            throw new ExceptionCustom("Projeto não encontrado");
         }
-        return NotFound("Projeto não encontrado.");
+        catch (ExceptionCustom t)
+        {
+            System.Console.WriteLine(t.Message);
+            return NotFound(t.Message);
+        }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpDelete("Delete/{idProjeto}")]
     public IActionResult removerProj(int idProjeto)
     {
-        var _context = new ProjetoFinalContext();
-        Projeto? entityRemove = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
-        if (entityRemove != null)
+        try
         {
-            _context.projetos.Remove(entityRemove);
-            return Ok("Projeto removido com sucesso.");
+            var _context = new ProjetoFinalContext();
+            Projeto? entityRemove = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
+            if (entityRemove != null)
+            {
+                _context.projetos.Remove(entityRemove);
+                return Ok("Projeto removido com sucesso.");
+            }
+            throw new ExceptionCustom("Não foi possivel encontrar o projeto");
         }
-        return NotFound("Não foi possivel encontrar o projeto.");
+        catch (ExceptionCustom t)
+        {
+            System.Console.WriteLine(t.Message);
+            return NotFound(t.Message);
+        }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
+
+
+
     }
 
     [HttpPut("Update/{idProjeto}/")]
     public IActionResult updateProj(int idProjeto, string? nomeProjeto, string? descricaoProjeto, string? statusProjeto, float? valorProjeto, DateOnly? dataEntregaProjeto)
     {
-        var _context = new ProjetoFinalContext();
-        Projeto? entityUpdate = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
-        if (entityUpdate != null)
+        var _context = new ProjetoFinalContext(); try
         {
+            Projeto? entityUpdate = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
+            if (entityUpdate == null)
+            {
+                throw new ExceptionCustom("Projeto não encontrado");
+            }
             if (nomeProjeto != null)
             {
                 entityUpdate.nomeProjeto = nomeProjeto;
@@ -107,7 +187,17 @@ public class ProjetoController : Controller
 
             _context.SaveChanges();
             return Ok("Dados Atulizados.");
+
         }
-        return NotFound("Não foi possivel encontrar o projeto.");
+        catch (ExceptionCustom t)
+        {
+            System.Console.WriteLine(t.Message);
+            return NotFound(t.Message);
+        }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
     }
 }

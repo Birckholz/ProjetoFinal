@@ -8,6 +8,17 @@ namespace ProjetoFinal;
 [Route("[controller]")]
 public class FuncionarioController : Controller
 {
+
+    private Departamento? findDepartamento(int idDepartamento)
+    {
+        var _context = new ProjetoFinalContext();
+        Departamento? entityRetorno = _context.departamentos.FirstOrDefault(d => d.codDepartamento == idDepartamento);
+        return entityRetorno;
+    }
+
+
+
+
     [HttpPost("Add/{idCargo}/{idDepartamento}/{nomeFuncionario}/{telefoneFuncionario}/{emailFuncionario}/{enderecoFuncionario}/{CPFFuncionario}/{tipoContrFuncionario}/{modoTrabFuncionario}/{formacaoRelevanteFuncionario}/{statusFuncionario}")]
     public IActionResult addFuncionario(int idCargo, int idDepartamento, string CPFFuncionario, string emailFuncionario, string enderecoFuncionario, string formacaoRelevanteFuncionario, string modoTrabFuncionario, string nomeFuncionario, string statusFuncionario, string telefoneFuncionario, string tipoContrFuncionario)
     {
@@ -51,7 +62,8 @@ public class FuncionarioController : Controller
             {
                 throw new ExceptionCustom("Status Invalido");
             }
-            _context.funcionarios.Add(new Funcionario()
+            Departamento? departamentoFunc = findDepartamento(idDepartamento);
+            Funcionario funcAdicionado = new Funcionario()
             {
                 idCargo = idCargo,
                 idDepartamento = idDepartamento,
@@ -64,46 +76,94 @@ public class FuncionarioController : Controller
                 modoTrabFuncionario = modoTrabFuncionario,
                 telefoneFuncionario = telefoneFuncionario,
                 tipoContrFuncionario = tipoContrFuncionario
-            });
+            };
+            _context.funcionarios.Add(funcAdicionado);
+            if (departamentoFunc != null)
+            {
+                departamentoFunc.funcionariosDepartamento.Add(funcAdicionado);
+            }
+            _context.SaveChanges();
+            return Ok("Dados Inseridos");
         }
         catch (ExceptionCustom e)
         {
             System.Console.WriteLine(e.Message);
-        };
-        _context.SaveChanges();
-        return Ok("Dados Inseridos");
+            return NotFound(e.Message);
+        }
+        catch (Exception t)
+        {
+            System.Console.WriteLine(t.Message);
+            return BadRequest(t.Message);
+        }
+
     }
     [HttpGet("Get")]
     public IActionResult getFuncionarios()
     {
-        var _context = new ProjetoFinalContext();
-        DbSet<Funcionario> retorno = _context.funcionarios;
-        return Ok(retorno);
+        try
+        {
+            var _context = new ProjetoFinalContext();
+            DbSet<Funcionario> retorno = _context.funcionarios;
+            return Ok(retorno);
+        }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
+
     }
 
     [HttpGet("GetById/{idFuncionario}")]
     public IActionResult getFuncById(int idFuncionario)
     {
-        var _context = new ProjetoFinalContext();
-        Funcionario? entityGet = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
-        if (entityGet != null)
+        try
         {
+            var _context = new ProjetoFinalContext();
+            Funcionario? entityGet = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
+            if (entityGet == null)
+            {
+                throw new ExceptionCustom("Funcionario não encontrado");
+            }
             return Ok(entityGet);
         }
-        return NotFound("Projeto não encontrado.");
+        catch (ExceptionCustom t)
+        {
+            System.Console.WriteLine(t.Message);
+            return NotFound(t.Message);
+
+        }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpDelete("Delete/{idFuncionario}")]
     public IActionResult removerFunc(int idFuncionario)
     {
-        var _context = new ProjetoFinalContext();
-        Funcionario? entityRemove = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
-        if (entityRemove != null)
+        try
         {
+            var _context = new ProjetoFinalContext();
+            Funcionario? entityRemove = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
+            if (entityRemove == null)
+            {
+                throw new ExceptionCustom("Funcionario não encontrado");
+            }
             _context.funcionarios.Remove(entityRemove);
-            return Ok("Projeto removido com sucesso.");
+            return Ok("Funcionario removido com sucesso.");
         }
-        return NotFound("Não foi possivel encontrar o projeto.");
+        catch (ExceptionCustom t)
+        {
+            System.Console.WriteLine(t.Message);
+            return NotFound(t.Message);
+        }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPut("Update/{idFuncionario}/")]
@@ -111,8 +171,13 @@ public class FuncionarioController : Controller
     {
         var _context = new ProjetoFinalContext();
         Funcionario? entityUpdate = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
-        if (entityUpdate != null)
+
+        try
         {
+            if (entityUpdate == null)
+            {
+                throw new ExceptionCustom("Funcionario não encontrado");
+            }
             if (!nomeFuncionario.IsNullOrEmpty())
             {
                 entityUpdate.nomeFuncionario = nomeFuncionario;
@@ -149,10 +214,21 @@ public class FuncionarioController : Controller
             {
                 entityUpdate.statusFuncionario = statusFuncionario;
             }
-
             _context.SaveChanges();
             return Ok("Dados Atulizados.");
         }
-        return NotFound("Não foi possivel encontrar o Funcionario.");
+        catch (ExceptionCustom t)
+        {
+            System.Console.WriteLine(t.Message);
+            return NotFound(t.Message);
+        }
+        catch (Exception e)
+        {
+            System.Console.WriteLine(e.Message);
+            return BadRequest(e.Message);
+        }
+
+
+
     }
 }

@@ -11,15 +11,12 @@ namespace ProjetoFinal
         [Key]
         public int codFuncionario { get; set; }
 
-
         public int? idCargo { get; set; }
-        [ForeignKey("idCargo")]
-
         public virtual Cargo? fkCodCargo { get; set; }
 
         public int? idDepartamento { get; set; }
-
         public virtual Departamento? fkCodDepartamento { get; set; }
+
         [MaxLength(100)]
         [Required]
         public string? nomeFuncionario { get; set; }

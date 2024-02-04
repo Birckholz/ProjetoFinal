@@ -13,13 +13,10 @@ namespace ProjetoFinal
         [Required]
         public string? nomeCargo { get; set; }
         public float salarioBase { get; set; }
-        //public virtual ICollection<Funcionario> funcionarioCargos { get; set; } = null!
-        public ICollection<Funcionario> funcionarioCargos { get; set; }
-
+        public virtual ICollection<Funcionario> funcionarioCargos { get; set; } = null!;
         public Cargo()
         {
             funcionarioCargos = new List<Funcionario>();
         }
-        //esta duplicando o cod de cargo no funcionario
     }
 }

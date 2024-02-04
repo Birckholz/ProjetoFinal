@@ -7,7 +7,7 @@ namespace ProjetoFinal
     [Route("[controller]")]
     public class ClienteController : Controller
     {
-        bool telefoneValido(string telefone)
+        private bool telefoneValido(string telefone)
         {
             foreach (char caractere in telefone)
             {
@@ -23,14 +23,15 @@ namespace ProjetoFinal
             }
             return true;
         }
-        bool documentoValido(string valor){//para validar cpf e cnpj
+        private bool documentoValido(string valor)
+        {//para validar cpf e cnpj
             foreach (char caractere in valor)
             {
                 if (!char.IsDigit(caractere) &&
                     caractere != ' ' &&
                     caractere != '-' &&
-                    caractere != '.'&&
-                    caractere !='/')
+                    caractere != '.' &&
+                    caractere != '/')
                 {
                     return false;
                 }
@@ -38,9 +39,9 @@ namespace ProjetoFinal
             return true;
         }
 
-    //como tem atributos opcionais, será por query o Add + path os obrigatorios
+        //como tem atributos opcionais, será por query o Add + path os obrigatorios
         [HttpPost("Add/{nome}/{telefone}/{email}/{endereco}")]
-        public IActionResult postCliente(string nome,string telefone,string email,string endereco,string? descricao, string? cpf,string? cnpj,string? status)
+        public IActionResult postCliente(string nome, string telefone, string email, string endereco, string? descricao, string? cpf, string? cnpj, string? status)
         {
             try
             {
@@ -64,21 +65,24 @@ namespace ProjetoFinal
                 {
                     return BadRequest("O cliente precisa de CPF ou CNPJ");
                 }
-                if(cpf!=null && !documentoValido(cpf)){
+                if (cpf != null && !documentoValido(cpf))
+                {
                     return BadRequest("O CPF não é válido");
                 }
-                if(cnpj!=null && !documentoValido(cnpj)){
+                if (cnpj != null && !documentoValido(cnpj))
+                {
                     return BadRequest("O CNPJ não é válido");
                 }
-                Cliente cliente =new Cliente(){
-                    nomeCliente=nome,
-                    telefoneCliente=telefone,
-                    emailCliente=email,
-                    enderecoCliente=endereco,
-                    descricaoCliente=descricao,
-                    PessFCPFCliente=cpf,
-                    PessJCNPJCliente=cnpj,
-                    statusCliente=status
+                Cliente cliente = new Cliente()
+                {
+                    nomeCliente = nome,
+                    telefoneCliente = telefone,
+                    emailCliente = email,
+                    enderecoCliente = endereco,
+                    descricaoCliente = descricao,
+                    PessFCPFCliente = cpf,
+                    PessJCNPJCliente = cnpj,
+                    statusCliente = status
                 };
                 using (var _context = new ProjetoFinalContext())
                 {
@@ -154,75 +158,89 @@ namespace ProjetoFinal
         }
 
         [HttpPut("Update/{idCliente}")]
-        public IActionResult putCliente(int idCliente, string? nome,string? telefone,string? email,string? endereco,string? descricao, string? cpf,string? cnpj,string? status)
+        public IActionResult putCliente(int idCliente, string? nome, string? telefone, string? email, string? endereco, string? descricao, string? cpf, string? cnpj, string? status)
         {
             try
             {
                 var _context = new ProjetoFinalContext();
                 var cliente = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
-                if(cliente == null)
+                if (cliente == null)
                 {
                     return NotFound("Não foi possivel encontrar o cliente.");
                 }
-                if (nome != null){
-                    if( !string.IsNullOrWhiteSpace(nome))
+                if (nome != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(nome))
                     {
-                        cliente.nomeCliente=nome;
+                        cliente.nomeCliente = nome;
                     }
-                    else{
+                    else
+                    {
                         return BadRequest("O nome não pode ser vazio");
                     }
                 }
-                if (telefone != null){
-                    if(telefoneValido(telefone))
+                if (telefone != null)
+                {
+                    if (telefoneValido(telefone))
                     {
-                       cliente.telefoneCliente=telefone;
+                        cliente.telefoneCliente = telefone;
                     }
-                    else{
+                    else
+                    {
                         return BadRequest("O telefone não pode ser vazio");
                     }
                 }
-                if (email != null){
-                    if( !string.IsNullOrWhiteSpace(email))
+                if (email != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(email))
                     {
-                        cliente.emailCliente=email;
+                        cliente.emailCliente = email;
                     }
-                    else{
+                    else
+                    {
                         return BadRequest("O email não pode ser vazio");
                     }
                 }
-                if (endereco != null){
-                    if( !string.IsNullOrWhiteSpace(endereco))
+                if (endereco != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(endereco))
                     {
-                        cliente.enderecoCliente=endereco;
+                        cliente.enderecoCliente = endereco;
                     }
-                    else{
+                    else
+                    {
                         return BadRequest("O endereço não pode ser vazio");
                     }
                 }
-                if(descricao!=null){
-                    cliente.descricaoCliente=descricao;
+                if (descricao != null)
+                {
+                    cliente.descricaoCliente = descricao;
                 }
-                if (cpf != null){
-                    if(documentoValido(cpf))
+                if (cpf != null)
+                {
+                    if (documentoValido(cpf))
                     {
-                        cliente.PessFCPFCliente=cpf;
+                        cliente.PessFCPFCliente = cpf;
                     }
-                    else{
+                    else
+                    {
                         return BadRequest("O CPF não é válido");
                     }
                 }
-                if (cnpj != null){
-                    if(documentoValido(cnpj))
+                if (cnpj != null)
+                {
+                    if (documentoValido(cnpj))
                     {
-                        cliente.PessJCNPJCliente=cnpj;
+                        cliente.PessJCNPJCliente = cnpj;
                     }
-                    else{
+                    else
+                    {
                         return BadRequest("O CNPJ não é válido");
                     }
                 }
-                if(status !=null){
-                    cliente.statusCliente=status;
+                if (status != null)
+                {
+                    cliente.statusCliente = status;
                 }
                 if (string.IsNullOrWhiteSpace(cliente.PessFCPFCliente) && string.IsNullOrWhiteSpace(cliente.PessJCNPJCliente))
                 {
