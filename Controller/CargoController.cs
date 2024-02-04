@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProjetoFinal
 {
-        //refazer para vir por link , n por body e terminar validação
 
     [ApiController]
     [Route("[controller]")]

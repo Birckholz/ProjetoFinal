@@ -9,7 +9,10 @@ namespace ProjetoFinal;
 [Route("[controller]")]
 public class ProjetoController : Controller
 {
-    [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}/{idFuncionario}")]
+    //bia: erro , não precisa de id funcionário, tirei para testar
+   // [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}/{idFuncionario}")]
+    [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}")]
+
     public IActionResult addProjeto(int codDepartamento, int idCliente, string nomeProjeto, float valorProjeto, DateOnly dataEntregaProjeto)
     {
         try
