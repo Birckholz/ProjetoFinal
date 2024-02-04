@@ -15,7 +15,7 @@ namespace ProjetoFinal
         [MaxLength(50)]
         [Required]
         public string? telefoneCliente { get; set; }
-        [MaxLength(50)]
+        [MaxLength(50), EmailAddress]
         [Required]
         public string? emailCliente { get; set; }
         [MaxLength(100)]

@@ -11,62 +11,75 @@ namespace ProjetoFinal
     public class ArquivoController : Controller
     {
 
-        string arquivoProjDepart(string texto){
-            texto="____________________________________EMPRESA ____________________________________"+
+        private string arquivoProjDepart(string texto)
+        {
+            texto = "____________________________________EMPRESA ____________________________________" +
             "\nRelatório dos projetos de cada departamento:\n";
             var _context = new ProjetoFinalContext();
-            int codAnterior=-1;
-            string departamentoCodNome="";
-            if (!_context.projetos.Any()){
+            int codAnterior = -1;
+            string departamentoCodNome = "";
+            if (!_context.projetos.Any())
+            {
                 return "Não temos projetos cadastrados";
             }
             //vamos ter uma lista organizada pelo departamento
-            else{
+            else
+            {
                 var projetosDepartamento = _context.projetos.OrderBy(projeto => projeto.codDepartamento).ToList();
             }
-            if (!_context.departamentos.Any()){
+            if (!_context.departamentos.Any())
+            {
                 return "Não temos departamentos cadastrados";
             }
-            foreach(Projeto projeto in _context.projetos){
+            foreach (Projeto projeto in _context.projetos)
+            {
                 //se mudou o departamento,imprimimos o novo
-                if (codAnterior!=projeto.codDepartamento){
+                if (codAnterior != projeto.codDepartamento)
+                {
                     var departamento = _context.departamentos.FirstOrDefault(y => y.codDepartamento == projeto.codDepartamento);
-                    if (departamento==null){
-                        departamentoCodNome="Departamento não existe";
+                    if (departamento == null)
+                    {
+                        departamentoCodNome = "Departamento não existe";
                     }
-                    else{
-                        departamentoCodNome="DEPARTAMENTO : "+Convert.ToString(departamento.codDepartamento)+"----->"+departamento.nomeDepartamento;
+                    else
+                    {
+                        departamentoCodNome = "DEPARTAMENTO : " + Convert.ToString(departamento.codDepartamento) + "----->" + departamento.nomeDepartamento;
                     }
-                    texto=texto+"\n"+departamentoCodNome;
+                    texto += "\n" + departamentoCodNome;
                 }
                 //depois imprimimos detalhes do projeto
-                texto=texto+"\n"+"Código do projeto: "+Convert.ToString(projeto.codProjeto)+"        "
-                +"Nome do projeto: "+projeto.nomeProjeto+"        "+"Cliente: "+projeto.idCliente +"\n"+"Status: "+projeto.statusProjeto +"        "+"Data de entrega: "+Convert.ToString(projeto.dataEntregaProjeto);
+                texto += "\n" + "Código do projeto: " + Convert.ToString(projeto.codProjeto) + "        "
+                + "Nome do projeto: " + projeto.nomeProjeto + "        " + "Cliente: " + projeto.idCliente + "\n" + "Status: " + projeto.statusProjeto + "        " + "Data de entrega: " + Convert.ToString(projeto.dataEntregaProjeto);
                 //e atualizamos o codAnterior, assim, se for de outro departamento ,fazemos um cabeçalho
-                codAnterior=projeto.codDepartamento;
+                codAnterior = projeto.codDepartamento;
             }
             return texto;
 
         }
-        
-        string arquivoProjFuncio(string texto,Funcionario funcionario){
-            texto="____________________________________EMPRESA ____________________________________"+
-            "\nRelatório dos projetos do funcionário de ID:"+Convert.ToString(funcionario.codFuncionario)+"\n"+
-            "Nome: "+funcionario.nomeFuncionario+"        "+"Código de Cargo: "+funcionario.idCargo+"        "+"Código de Departamento: "+funcionario.idDepartamento+"\n"+
+
+        private string arquivoProjFuncio(string texto, Funcionario funcionario)
+        {
+            texto = "____________________________________EMPRESA ____________________________________" +
+            "\nRelatório dos projetos do funcionário de ID:" + Convert.ToString(funcionario.codFuncionario) + "\n" +
+            "Nome: " + funcionario.nomeFuncionario + "        " + "Código de Cargo: " + funcionario.idCargo + "        " + "Código de Departamento: " + funcionario.idDepartamento + "\n" +
             "\nPROJETOS:\n";
             var _context = new ProjetoFinalContext();
-            if (!_context.projetos.Any()){
+            if (!_context.projetos.Any())
+            {
                 return "Não temos projetos cadastrados";
             }
-            foreach(ProjetoFuncionario pf in _context.funcionariosProjeto){
+            foreach (ProjetoFuncionario pf in _context.funcionariosProjeto)
+            {
                 //vamos achar as conexoes do nosso funcionario com outros projetos
-                if(pf.idFuncionario==funcionario.codFuncionario){
+                if (pf.idFuncionario == funcionario.codFuncionario)
+                {
                     var projeto = _context.projetos.FirstOrDefault(y => y.codProjeto == pf.idProjeto);
-                    if(projeto!=null){//apenas para garantir que n seja nulo
-                    //colocamos os detalhes do projeto
-                        texto=texto+"Código do projeto: "+Convert.ToString(projeto.codProjeto)+"        "
-                        +"Nome do projeto: "+projeto.nomeProjeto+"        "+"Cliente: "+projeto.idCliente +"\n"+"Status: "+projeto.statusProjeto +"        "
-                        +"Data de entrega: "+Convert.ToString(projeto.dataEntregaProjeto)+"\n\n";
+                    if (projeto != null)
+                    {//apenas para garantir que n seja nulo
+                     //colocamos os detalhes do projeto
+                        texto += "Código do projeto: " + Convert.ToString(projeto.codProjeto) + "        "
+                        + "Nome do projeto: " + projeto.nomeProjeto + "        " + "Cliente: " + projeto.idCliente + "\n" + "Status: " + projeto.statusProjeto + "        "
+                        + "Data de entrega: " + Convert.ToString(projeto.dataEntregaProjeto) + "\n\n";
                     }
                 }
             }
@@ -78,8 +91,9 @@ namespace ProjetoFinal
         [HttpGet("GetProjetosDepartamentos")]
         public IActionResult getProjetosDepartamentos()
         {
-            try{
-                string texto="";
+            try
+            {
+                string texto = "";
                 // Caminho da pasta "Downloads" do usuário
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
                 // Nome do arquivo que será criado na pasta Downloads
@@ -94,7 +108,9 @@ namespace ProjetoFinal
                     sw.Write(arquivoProjDepart(texto));
                 }
                 return Ok("O arquivo foi criado na pasta de dowloads");
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }
@@ -102,13 +118,15 @@ namespace ProjetoFinal
         [HttpGet("GetProjetosFuncionario/{idFuncionario}")]
         public IActionResult getProjetosFuncionario(int idFuncionario)
         {
-            try{
+            try
+            {
                 var _context = new ProjetoFinalContext();
-                Funcionario? funcionario= _context.funcionarios.FirstOrDefault(p => p.codFuncionario == idFuncionario);
-                if(funcionario==null){
+                Funcionario? funcionario = _context.funcionarios.FirstOrDefault(p => p.codFuncionario == idFuncionario);
+                if (funcionario == null)
+                {
                     return NotFound("Esse funcionário não existe");
                 }
-                string texto="";
+                string texto = "";
                 // Caminho da pasta "Downloads" do usuário
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
                 // Nome do arquivo que será criado na pasta Downloads
@@ -120,10 +138,12 @@ namespace ProjetoFinal
                 using (StreamWriter sw = new StreamWriter(pathCompleto))
                 {
                     //Lógica para achar departamento e projetos
-                    sw.Write(arquivoProjFuncio(texto,funcionario));
+                    sw.Write(arquivoProjFuncio(texto, funcionario));
                 }
                 return Ok("O arquivo foi criado na pasta de dowloads");
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }

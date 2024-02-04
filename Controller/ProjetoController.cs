@@ -10,32 +10,35 @@ namespace ProjetoFinal;
 public class ProjetoController : Controller
 {
     //bia: erro , não precisa de id funcionário, tirei para testar
-   // [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}/{idFuncionario}")]
+    // [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}/{idFuncionario}")]
+    //Guilherme: Não sei pq tava ai eu nem coloquei na chamada do metodo
     [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}")]
 
     public IActionResult addProjeto(int codDepartamento, int idCliente, string nomeProjeto, float valorProjeto, DateOnly dataEntregaProjeto)
     {
+        var _context = new ProjetoFinalContext();
+
         try
         {
             if (nomeProjeto.IsNullOrEmpty())
             {
                 throw new ExceptionCustom("Nome de projeto inválido.");
             };
+            _context.projetos.Add(new Projeto()
+            {
+                codDepartamento = codDepartamento,
+                idCliente = idCliente,
+                nomeProjeto = nomeProjeto,
+                statusProjeto = "Iniciado",
+                valorProjeto = valorProjeto,
+                dataEntregaProjeto = dataEntregaProjeto
+            });
         }
         catch (ExceptionCustom e)
         {
             System.Console.WriteLine(e.Message);
         }
-        var _context = new ProjetoFinalContext();
-        _context.projetos.Add(new Projeto()
-        {
-            codDepartamento = codDepartamento,
-            idCliente = idCliente,
-            nomeProjeto = nomeProjeto,
-            statusProjeto = "Iniciado",
-            valorProjeto = valorProjeto,
-            dataEntregaProjeto = dataEntregaProjeto
-        });
+
         _context.SaveChanges();
         return Ok("Dados Inseridos");
     }

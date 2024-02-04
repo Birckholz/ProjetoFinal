@@ -16,8 +16,8 @@ public class ProjetoFinalContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //Não esquecer de mudar Server= ao clonar
-        //optionsBuilder.UseSqlServer(@"Server=GUILHERME2943\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
-        optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer(@"Server=GUILHERME2943\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        // optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,12 +29,14 @@ public class ProjetoFinalContext : DbContext
             .HasOne(pj => pj.fkProjeto)
             .WithMany(p => p.funcionariosProj)
             .HasForeignKey(pj => pj.idProjeto)
+            .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("fkProjeto");
 
         modelBuilder.Entity<ProjetoFuncionario>()
             .HasOne(pj => pj.fkFuncionario)
             .WithMany(f => f.funcionariosProj)
             .HasForeignKey(pj => pj.idFuncionario)
+            .OnDelete(DeleteBehavior.Cascade)
             .HasConstraintName("fkFuncionario");
 
         modelBuilder.Entity<Funcionario>()

@@ -10,20 +10,24 @@ namespace ProjetoFinal
     {
 
         // criar direto no banco o nulo
-        
+
         [HttpPost("Add/{nome}/{salario}")]
-        public IActionResult postCargo(string nome,float salario)
+        public IActionResult postCargo(string nome, float salario)
         {
-            try{
-                if (string.IsNullOrWhiteSpace(nome)){
+            try
+            {
+                if (string.IsNullOrWhiteSpace(nome))
+                {
                     return BadRequest("O nome não pode ser nulo ou vazio");
                 }
-                if (salario<=0){
+                if (salario <= 0)
+                {
                     return BadRequest("O salário precisa ser maior que zero");
                 }
-                Cargo cargo =new Cargo(){
-                    nomeCargo=nome,
-                    salarioBase=salario
+                Cargo cargo = new Cargo()
+                {
+                    nomeCargo = nome,
+                    salarioBase = salario
                 };
                 using (var _context = new ProjetoFinalContext())
                 {
@@ -31,7 +35,9 @@ namespace ProjetoFinal
                     _context.SaveChanges();
                     return new ObjectResult(cargo);
                 }
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }
@@ -47,85 +53,101 @@ namespace ProjetoFinal
         [HttpGet("GetById/{idCargo}")]
         public IActionResult getCargo(int idCargo)
         {
-            try{
+            try
+            {
                 using (var _context = new ProjetoFinalContext())
                 {
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
-                    if(item == null)
+                    if (item == null)
                     {
-                        return NotFound("Não foi possivel encontrar o cargo."); 
+                        return NotFound("Não foi possivel encontrar o cargo.");
                     }
                     return new ObjectResult(item);
                 }
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }
 
-//DUVIDA
+        //DUVIDA
 
         [HttpDelete("Delete/{idCargo}")]
         public IActionResult deleteCargo(int idCargo)
         {
-            try{
+            try
+            {
                 using (var _context = new ProjetoFinalContext())
                 {
- //esses var precisam '?' pra se n achar o cargoNulo?
-                    var CargoNulo=_context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");
+                    //esses var precisam '?' pra se n achar o cargoNulo?
+                    var CargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
-                    if(item == null)
+                    if (item == null)
                     {
-                        return NotFound("Não foi possivel encontrar o cargo."); 
+                        return NotFound("Não foi possivel encontrar o cargo.");
                     }
-                    foreach (Funcionario funcionario in _context.funcionarios){
-                        if (funcionario.idCargo==idCargo && CargoNulo!=null){
-                            funcionario.idCargo=CargoNulo.codCargo;
+                    foreach (Funcionario funcionario in _context.funcionarios)
+                    {
+                        if (funcionario.idCargo == idCargo && CargoNulo != null)
+                        {
+                            funcionario.idCargo = CargoNulo.codCargo;
                         }
                     }
                     _context.cargos.Remove(item);
                     _context.SaveChanges();
-                    return Ok("Cargo removido com sucesso."); 
+                    return Ok("Cargo removido com sucesso.");
                 }
-            }catch(Exception e ){
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }
 
         [HttpPut("Update/{idCargo}")]
-        public IActionResult putCargo(int idCargo,string? nome, float?salario)
+        public IActionResult putCargo(int idCargo, string? nome, float? salario)
         {
-            try{
+            try
+            {
                 var _context = new ProjetoFinalContext();
                 var cargo = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
-                if(cargo == null)
+                if (cargo == null)
                 {
-                    return NotFound("Não foi possivel encontrar o cargo."); 
+                    return NotFound("Não foi possivel encontrar o cargo.");
                 }
-                if (nome != null){
-                    if( !string.IsNullOrWhiteSpace(nome))
+                if (nome != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(nome))
                     {
-                        cargo.nomeCargo=nome;
+                        cargo.nomeCargo = nome;
                     }
-                    else{
+                    else
+                    {
                         return BadRequest("O nome não pode ser vazio");
                     }
                 }
-                if (salario !=null ){
-                    if(salario>0){
-                        float salario1=Convert.ToSingle(salario);
-                        cargo.salarioBase= salario1;
+                if (salario != null)
+                {
+                    if (salario > 0)
+                    {
+                        float salario1 = Convert.ToSingle(salario);
+                        cargo.salarioBase = salario1;
                     }
-                    else{
+                    else
+                    {
                         return BadRequest("O salário precisa ser maior que zero");
                     }
                 }
                 _context.SaveChanges();
                 return new ObjectResult(cargo);
-            }catch(Exception e){
-                return BadRequest(e.Message);                 
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
-        
+
 
     }
 

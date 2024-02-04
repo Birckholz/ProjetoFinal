@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ProjetoFinal;
 [ApiController]
@@ -11,13 +12,32 @@ public class ContaBancariaController : Controller
     public IActionResult addContaBancaria(int codFuncionario, string agenciaContaB, string numeroContaB, string tipoContaB)
     {
         var _context = new ProjetoFinalContext();
-        _context.contasBancarias.Add(new ContaBancaria()
+        try
         {
-            codFuncionario = codFuncionario,
-            agenciaContaB = agenciaContaB,
-            numeroContaB = numeroContaB,
-            tipoContaB = tipoContaB
-        });
+            if (agenciaContaB.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Conta bancaria invalida");
+            }
+            if (numeroContaB.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Numero de Conta invalida");
+            }
+            if (tipoContaB.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Tipo de Conta bancaria invalida");
+            }
+            _context.contasBancarias.Add(new ContaBancaria()
+            {
+                codFuncionario = codFuncionario,
+                agenciaContaB = agenciaContaB,
+                numeroContaB = numeroContaB,
+                tipoContaB = tipoContaB
+            });
+        }
+        catch (ExceptionCustom e)
+        {
+            System.Console.WriteLine(e.Message);
+        }
         _context.SaveChanges();
         return Ok("Dados Inseridos");
     }

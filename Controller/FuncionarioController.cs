@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ProjetoFinal;
 [ApiController]
@@ -11,21 +12,64 @@ public class FuncionarioController : Controller
     public IActionResult addFuncionario(int idCargo, int idDepartamento, string CPFFuncionario, string emailFuncionario, string enderecoFuncionario, string formacaoRelevanteFuncionario, string modoTrabFuncionario, string nomeFuncionario, string statusFuncionario, string telefoneFuncionario, string tipoContrFuncionario)
     {
         var _context = new ProjetoFinalContext();
-        _context.funcionarios.Add(new Funcionario()
+        try
         {
-            idCargo = idCargo,
-            idDepartamento = idDepartamento,
-            CPFFuncionario = CPFFuncionario,
-            emailFuncionario = emailFuncionario,
-            enderecoFuncionario = enderecoFuncionario,
-            formacaoRelevanteFuncionario = formacaoRelevanteFuncionario,
-            nomeFuncionario = nomeFuncionario,
-            statusFuncionario = statusFuncionario,
-            modoTrabFuncionario = modoTrabFuncionario,
-            telefoneFuncionario = telefoneFuncionario,
-            tipoContrFuncionario = tipoContrFuncionario
-        });
 
+            if (nomeFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Nome Invalido");
+            }
+            if (telefoneFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Telefone Invalido");
+            }
+            if (enderecoFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Endereco Invalido");
+            }
+            if (emailFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Email Invalido");
+            }
+            if (CPFFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("CPF Invalido");
+            }
+            if (tipoContrFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Tipo de Contrato Invalido");
+            }
+            if (modoTrabFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Modo de Trabalho Invalido");
+            }
+            if (formacaoRelevanteFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Formacao nao reconehecida");
+            }
+            if (statusFuncionario.IsNullOrEmpty())
+            {
+                throw new ExceptionCustom("Status Invalido");
+            }
+            _context.funcionarios.Add(new Funcionario()
+            {
+                idCargo = idCargo,
+                idDepartamento = idDepartamento,
+                CPFFuncionario = CPFFuncionario,
+                emailFuncionario = emailFuncionario,
+                enderecoFuncionario = enderecoFuncionario,
+                formacaoRelevanteFuncionario = formacaoRelevanteFuncionario,
+                nomeFuncionario = nomeFuncionario,
+                statusFuncionario = statusFuncionario,
+                modoTrabFuncionario = modoTrabFuncionario,
+                telefoneFuncionario = telefoneFuncionario,
+                tipoContrFuncionario = tipoContrFuncionario
+            });
+        }
+        catch (ExceptionCustom e)
+        {
+            System.Console.WriteLine(e.Message);
+        };
         _context.SaveChanges();
         return Ok("Dados Inseridos");
     }
@@ -37,11 +81,11 @@ public class FuncionarioController : Controller
         return Ok(retorno);
     }
 
-    [HttpGet("GetById/{idProjeto}")]
-    public IActionResult getFuncById(int idProjeto)
+    [HttpGet("GetById/{idFuncionario}")]
+    public IActionResult getFuncById(int idFuncionario)
     {
         var _context = new ProjetoFinalContext();
-        Projeto? entityGet = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
+        Funcionario? entityGet = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
         if (entityGet != null)
         {
             return Ok(entityGet);
@@ -49,52 +93,66 @@ public class FuncionarioController : Controller
         return NotFound("Projeto não encontrado.");
     }
 
-    [HttpDelete("Delete/{idProjeto}")]
-    public IActionResult removerFunc(int idProjeto)
+    [HttpDelete("Delete/{idFuncionario}")]
+    public IActionResult removerFunc(int idFuncionario)
     {
         var _context = new ProjetoFinalContext();
-        Projeto? entityRemove = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
+        Funcionario? entityRemove = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
         if (entityRemove != null)
         {
-            _context.projetos.Remove(entityRemove);
+            _context.funcionarios.Remove(entityRemove);
             return Ok("Projeto removido com sucesso.");
         }
         return NotFound("Não foi possivel encontrar o projeto.");
     }
 
-    [HttpPut("Update/{idProjeto}/")]
-    public IActionResult updateFunc(int idProjeto, string? nomeProjeto, string? descricaoProjeto, string? statusProjeto, float? valorProjeto, DateOnly? dataEntregaProjeto)
+    [HttpPut("Update/{idFuncionario}/")]
+    public IActionResult updateFunc(int idFuncionario, string? nomeFuncionario, string? telefoneFuncionario, string? enderecoFuncionario, string? emailFuncionario, string? CPFFuncionario, string? tipoContrFuncionario, string? modoTrabFuncionario, string? formacaoRelevanteFuncionario, string? statusFuncionario)
     {
         var _context = new ProjetoFinalContext();
-        Projeto? entityUpdate = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
+        Funcionario? entityUpdate = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
         if (entityUpdate != null)
         {
-            if (nomeProjeto != null)
+            if (!nomeFuncionario.IsNullOrEmpty())
             {
-                entityUpdate.nomeProjeto = nomeProjeto;
+                entityUpdate.nomeFuncionario = nomeFuncionario;
             }
-            if (descricaoProjeto != null)
+            if (!telefoneFuncionario.IsNullOrEmpty())
             {
-                entityUpdate.descricaoProjeto = descricaoProjeto;
+                entityUpdate.telefoneFuncionario = telefoneFuncionario;
             }
-            if (statusProjeto != null)
+            if (!enderecoFuncionario.IsNullOrEmpty())
             {
-                entityUpdate.statusProjeto = statusProjeto;
+                entityUpdate.enderecoFuncionario = enderecoFuncionario;
             }
-            if (valorProjeto != null)
+            if (!emailFuncionario.IsNullOrEmpty())
             {
-                float valorEmFloat = (float)valorProjeto;
-                entityUpdate.valorProjeto = valorEmFloat;
+                entityUpdate.emailFuncionario = emailFuncionario;
             }
-            if (dataEntregaProjeto != null)
+            if (!CPFFuncionario.IsNullOrEmpty())
             {
-                DateOnly dataNaoNula = dataEntregaProjeto ?? DateOnly.MinValue;
-                entityUpdate.dataEntregaProjeto = dataNaoNula;
+                entityUpdate.CPFFuncionario = CPFFuncionario;
+            }
+            if (!tipoContrFuncionario.IsNullOrEmpty())
+            {
+                entityUpdate.tipoContrFuncionario = tipoContrFuncionario;
+            }
+            if (!modoTrabFuncionario.IsNullOrEmpty())
+            {
+                entityUpdate.modoTrabFuncionario = modoTrabFuncionario;
+            }
+            if (!formacaoRelevanteFuncionario.IsNullOrEmpty())
+            {
+                entityUpdate.formacaoRelevanteFuncionario = formacaoRelevanteFuncionario;
+            }
+            if (!statusFuncionario.IsNullOrEmpty())
+            {
+                entityUpdate.statusFuncionario = statusFuncionario;
             }
 
             _context.SaveChanges();
             return Ok("Dados Atulizados.");
         }
-        return NotFound("Não foi possivel encontrar o projeto.");
+        return NotFound("Não foi possivel encontrar o Funcionario.");
     }
 }
