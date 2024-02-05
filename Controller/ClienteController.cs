@@ -24,7 +24,7 @@ namespace ProjetoFinal
             return true;
         }
 
-        private bool documentoValido(string valor,int tipo)//mudei para ser mais especifico, só n checa formatação
+        private bool documentoValido(string valor,int tipo)
         {//para validar cpf e cnpj
             foreach (char caractere in valor)
             {
@@ -42,7 +42,6 @@ namespace ProjetoFinal
             return true;
         }
 
-        //como tem atributos opcionais, será por query o Add + path os obrigatorios
         [HttpPost("Add/{nome}/{telefone}/{email}/{endereco}/{descricao}/{cpf}/{cnpj}/{status}")]
         public IActionResult postCliente(string nome, string telefone, string email, string endereco, string? descricao, string? cpf, string? cnpj, string? status)
         {
@@ -50,31 +49,31 @@ namespace ProjetoFinal
             {
                 if (string.IsNullOrWhiteSpace(nome))
                 {
-                    return BadRequest("O nome não pode ser nulo ou vazio");
+                    throw new ExceptionCustom("O nome não pode ser nulo ou vazio");
                 }
                 if (!telefoneValido(telefone))
                 {
-                    return BadRequest("O telefone fornecido não é válido");
+                    throw new ExceptionCustom("O telefone fornecido não é válido");
                 }
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    return BadRequest("O email não pode ser nulo ou vazio");
+                    throw new ExceptionCustom("O email não pode ser nulo ou vazio");
                 }
                 if (string.IsNullOrWhiteSpace(endereco))
                 {
-                    return BadRequest("O endereco não pode ser nulo ou vazio");
+                    throw new ExceptionCustom("O endereco não pode ser nulo ou vazio");
                 }
                 if (string.IsNullOrWhiteSpace(cpf) && string.IsNullOrWhiteSpace(cnpj))
                 {
-                    return BadRequest("O cliente precisa de CPF ou CNPJ");
+                    throw new ExceptionCustom("O cliente precisa de CPF ou CNPJ");
                 }
                 if (cpf != null && !documentoValido(cpf,0))
                 {
-                    return BadRequest("O CPF não é válido");
+                    throw new ExceptionCustom("O CPF não é válido");
                 }
                 if (cnpj != null && !documentoValido(cnpj,1))
                 {
-                    return BadRequest("O CNPJ não é válido");
+                    throw new ExceptionCustom("O CNPJ não é válido");
                 }
                 Cliente cliente = new Cliente()
                 {
@@ -94,18 +93,31 @@ namespace ProjetoFinal
                     return new ObjectResult(cliente);
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "ClientesController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
-                return NotFound(e.Message);
+                ArquivoController.logErros(e.Message, "CLientesController");
+                return BadRequest(e.Message);
             }
         }
 
         [HttpGet("Get")]
         public IActionResult getClientes()
         {
-            var _context = new ProjetoFinalContext();
-            DbSet<Cliente> retorno = _context.clientes;
-            return Ok(retorno);
+            try{
+                var _context = new ProjetoFinalContext();
+                DbSet<Cliente> retorno = _context.clientes;
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                ArquivoController.logErros(e.Message, "CLientesController");
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet("GetById/{idCliente}")]
@@ -118,13 +130,19 @@ namespace ProjetoFinal
                     var item = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
                     if (item == null)
                     {
-                        return NotFound("Não foi possivel encontrar o cliente.");
+                        throw new ExceptionCustom("Não foi possivel encontrar o cliente.");
                     }
                     return new ObjectResult(item);
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "ClientesController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "CLientesController");
                 return BadRequest(e.Message);
             }
         }
@@ -140,7 +158,7 @@ namespace ProjetoFinal
                     var item = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
                     if (item == null)
                     {
-                        return NotFound("Não foi possivel encontrar o cliente.");
+                       throw new ExceptionCustom("Não foi possivel encontrar o cliente.");
                     }
                     foreach (Projeto projeto in _context.projetos)
                     {
@@ -154,8 +172,14 @@ namespace ProjetoFinal
                     return Ok("Cliente removido com sucesso.");
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "ClientesController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "CLientesController");
                 return BadRequest(e.Message);
             }
         }
@@ -169,7 +193,7 @@ namespace ProjetoFinal
                 var cliente = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
                 if (cliente == null)
                 {
-                    return NotFound("Não foi possivel encontrar o cliente.");
+                    throw new ExceptionCustom("Não foi possivel encontrar o cliente.");
                 }
                 if (nome != null)
                 {
@@ -179,7 +203,7 @@ namespace ProjetoFinal
                     }
                     else
                     {
-                        return BadRequest("O nome não pode ser vazio");
+                        throw new ExceptionCustom("O nome não pode ser vazio");
                     }
                 }
                 if (telefone != null)
@@ -190,7 +214,7 @@ namespace ProjetoFinal
                     }
                     else
                     {
-                        return BadRequest("O telefone não pode ser vazio");
+                        throw new ExceptionCustom("O telefone não pode ser vazio");
                     }
                 }
                 if (email != null)
@@ -201,7 +225,7 @@ namespace ProjetoFinal
                     }
                     else
                     {
-                        return BadRequest("O email não pode ser vazio");
+                        throw new ExceptionCustom("O email não pode ser vazio");
                     }
                 }
                 if (endereco != null)
@@ -212,7 +236,7 @@ namespace ProjetoFinal
                     }
                     else
                     {
-                        return BadRequest("O endereço não pode ser vazio");
+                        throw new ExceptionCustom("O endereço não pode ser vazio");
                     }
                 }
                 if (descricao != null)
@@ -227,7 +251,7 @@ namespace ProjetoFinal
                     }
                     else
                     {
-                        return BadRequest("O CPF não é válido");
+                        throw new ExceptionCustom("O CPF não é válido");
                     }
                 }
                 if (cnpj != null)
@@ -238,7 +262,7 @@ namespace ProjetoFinal
                     }
                     else
                     {
-                        return BadRequest("O CNPJ não é válido");
+                        throw new ExceptionCustom("O CNPJ não é válido");
                     }
                 }
                 if (status != null)
@@ -247,13 +271,19 @@ namespace ProjetoFinal
                 }
                 if (string.IsNullOrWhiteSpace(cliente.PessFCPFCliente) && string.IsNullOrWhiteSpace(cliente.PessJCNPJCliente))
                 {
-                    return BadRequest("O cliente precisa de CPF ou CNPJ");
+                    throw new ExceptionCustom("O cliente precisa de CPF ou CNPJ");
                 }
                 _context.SaveChanges();
                 return new ObjectResult(cliente);
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "ClientesController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "CLientesController");
                 return BadRequest(e.Message);
             }
         }

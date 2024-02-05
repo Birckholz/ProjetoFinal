@@ -81,12 +81,10 @@ public class ProjetoFuncionarioController : Controller
         catch (ExceptionCustom e)
         {
             ArquivoController.logErros(e.Message, "ProjetoFuncionarioController");
-            System.Console.WriteLine(e.Message);
         }
         catch (Exception t)
         {
             ArquivoController.logErros(t.Message, "ProjetoFuncionarioController");
-            System.Console.WriteLine(t.Message);
         }
         return NotFound("Não foi possivel encontrar esse registro.");
     }

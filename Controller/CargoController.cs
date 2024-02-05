@@ -9,8 +9,6 @@ namespace ProjetoFinal
     public class CargoController : Controller
     {
 
-        // criar direto no banco o nulo
-
         [HttpPost("Add/{nome}/{salario}")]
         public IActionResult postCargo(string nome, float salario)
         {
@@ -18,11 +16,11 @@ namespace ProjetoFinal
             {
                 if (string.IsNullOrWhiteSpace(nome))
                 {
-                    return BadRequest("O nome não pode ser nulo ou vazio");
+                    throw new ExceptionCustom("O nome não pode ser nulo ou vazio");
                 }
                 if (salario <= 0)
                 {
-                    return BadRequest("O salário precisa ser maior que zero");
+                    throw new ExceptionCustom("O salário precisa ser maior que zero");
                 }
                 Cargo cargo = new Cargo()
                 {
@@ -36,8 +34,14 @@ namespace ProjetoFinal
                     return new ObjectResult(cargo);
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "CargoController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "CargoController");
                 return BadRequest(e.Message);
             }
         }
@@ -45,9 +49,16 @@ namespace ProjetoFinal
         [HttpGet("Get")]
         public IActionResult getCargos()
         {
-            var _context = new ProjetoFinalContext();
-            DbSet<Cargo> retorno = _context.cargos;
-            return Ok(retorno);
+            try{
+                var _context = new ProjetoFinalContext();
+                DbSet<Cargo> retorno = _context.cargos;
+                return Ok(retorno);
+            }
+            catch (Exception e)
+            {
+                ArquivoController.logErros(e.Message, "CargoController");
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet("GetById/{idCargo}")]
@@ -60,18 +71,23 @@ namespace ProjetoFinal
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                     if (item == null)
                     {
-                        return NotFound("Não foi possivel encontrar o cargo.");
+                       throw new ExceptionCustom("Não foi possivel encontrar o cargo.");
                     }
                     return new ObjectResult(item);
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "CargoController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "CargoController");
                 return BadRequest(e.Message);
             }
         }
 
-        //DUVIDA
 
         [HttpDelete("Delete/{idCargo}")]
         public IActionResult deleteCargo(int idCargo)
@@ -80,12 +96,11 @@ namespace ProjetoFinal
             {
                 using (var _context = new ProjetoFinalContext())
                 {
-                    //esses var precisam '?' pra se n achar o cargoNulo?
                     var CargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                     if (item == null)
                     {
-                        return NotFound("Não foi possivel encontrar o cargo.");
+                        throw new ExceptionCustom("Não foi possivel encontrar o cargo.");
                     }
                     foreach (Funcionario funcionario in _context.funcionarios)
                     {
@@ -99,8 +114,14 @@ namespace ProjetoFinal
                     return Ok("Cargo removido com sucesso.");
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "CargoController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "CargoController");
                 return BadRequest(e.Message);
             }
         }
@@ -114,7 +135,7 @@ namespace ProjetoFinal
                 var cargo = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                 if (cargo == null)
                 {
-                    return NotFound("Não foi possivel encontrar o cargo.");
+                    throw new ExceptionCustom("Não foi possivel encontrar o cargo.");
                 }
                 if (nome != null)
                 {
@@ -124,7 +145,7 @@ namespace ProjetoFinal
                     }
                     else
                     {
-                        return BadRequest("O nome não pode ser vazio");
+                        throw new ExceptionCustom("O nome não pode ser vazio");
                     }
                 }
                 if (salario != null)
@@ -136,14 +157,20 @@ namespace ProjetoFinal
                     }
                     else
                     {
-                        return BadRequest("O salário precisa ser maior que zero");
+                        throw new ExceptionCustom("O salário precisa ser maior que zero");
                     }
                 }
                 _context.SaveChanges();
                 return new ObjectResult(cargo);
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "CargoController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "CargoController");
                 return BadRequest(e.Message);
             }
         }

@@ -129,6 +129,7 @@ namespace ProjetoFinal
             }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "ArquivoController");
                 return BadRequest(e.Message);
             }
         }
@@ -161,6 +162,7 @@ namespace ProjetoFinal
             }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "ArquivoController");
                 return BadRequest(e.Message);
             }
         }

@@ -22,11 +22,11 @@ namespace ProjetoFinal
             {
                 if (string.IsNullOrWhiteSpace(nome))
                 {
-                    return BadRequest("O nome não pode ser nulo ou vazio");
+                    throw new ExceptionCustom("O nome não pode ser nulo ou vazio");
                 }
                 if (!funcionarioValido(responsavel))
                 {
-                    return BadRequest("O responsável não é válido");
+                    throw new ExceptionCustom("O responsável não é válido");
                 }
                 Departamento departamento=new Departamento(){
                     nomeDepartamento=nome,
@@ -39,8 +39,14 @@ namespace ProjetoFinal
                     return new ObjectResult(departamento);
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "DepartamentoController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "DepartamentoController");
                 return BadRequest(e.Message);
             }
         }
@@ -48,9 +54,14 @@ namespace ProjetoFinal
         [HttpGet("Get")]
         public IActionResult getDepartamentos()
         {
-            var _context = new ProjetoFinalContext();
-            DbSet<Departamento> retorno = _context.departamentos;
-            return Ok(retorno);
+            try{
+                var _context = new ProjetoFinalContext();
+                DbSet<Departamento> retorno = _context.departamentos;
+                return Ok(retorno);
+            }catch(Exception e){
+                ArquivoController.logErros(e.Message, "DepartamentoController");
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet("GetById/{idDepartamento}")]
@@ -63,13 +74,19 @@ namespace ProjetoFinal
                     var item = _context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                     if (item == null)
                     {
-                        return NotFound("Não foi possivel encontrar o departamento.");
+                        throw new ExceptionCustom("Não foi possivel encontrar o departamento.");
                     }
                     return new ObjectResult(item);
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "DepartamentoController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "DepartamentoController");
                 return BadRequest(e.Message);
             }
         }
@@ -85,7 +102,7 @@ namespace ProjetoFinal
                     var item = _context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                     if (item == null)
                     {
-                        return NotFound("Não foi possivel encontrar o departamento.");
+                        throw new ExceptionCustom("Não foi possivel encontrar o departamento.");
                     }
                     foreach (Projeto projeto in _context.projetos)
                     {
@@ -106,8 +123,14 @@ namespace ProjetoFinal
                     return Ok("Departamento removido com sucesso.");
                 }
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "DepartamentoController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "DepartamentoController");
                 return BadRequest(e.Message);
             }
         }
@@ -122,14 +145,14 @@ namespace ProjetoFinal
                 var departamento=_context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                 if (departamento == null)
                 {
-                    return NotFound("Não foi possivel encontrar o departamento.");
+                    throw new ExceptionCustom("Não foi possivel encontrar o departamento.");
                 }
                 if (nome!=null)
                 {
                     if(!string.IsNullOrWhiteSpace(nome)){
                         departamento.nomeDepartamento=nome;
                     }else{
-                        return BadRequest("O nome não pode ser vazio");
+                        throw new ExceptionCustom("O nome não pode ser nulo ou vazio");
                     }
                 }
                 if (responsavel!=null)
@@ -138,14 +161,20 @@ namespace ProjetoFinal
                     if(funcionarioValido(idResponsavel)){
                         departamento.responsavelDepartamento=idResponsavel;
                     }else{
-                       return BadRequest("O responsavel não pode ser vazio");
+                        throw new ExceptionCustom("O responsável não é válido");
                     }
                 }
                 _context.SaveChanges();
                 return new ObjectResult(departamento);
             }
+            catch (ExceptionCustom e)
+            {
+                ArquivoController.logErros(e.Message, "DepartamentoController");
+                return BadRequest(e.Message);
+            }
             catch (Exception e)
             {
+                ArquivoController.logErros(e.Message, "DepartamentoController");
                 return BadRequest(e.Message);
             }
         }
