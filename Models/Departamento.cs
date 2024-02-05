@@ -13,9 +13,9 @@ namespace ProjetoFinal
         [MaxLength(50)]
         [Required]
         public string? nomeDepartamento { get; set; }
-        [MaxLength(100)]
-        [Required]
-        public string? responsavelDepartamento { get; set; }
+        [ForeignKey("responsavelDepartamento")]
+        public virtual Funcionario? fkresponsavelDepartamento { get; set; }
+        public int responsavelDepartamento { get; set; }
 
         public ICollection<Funcionario> funcionariosDepartamento { get; set; }
 

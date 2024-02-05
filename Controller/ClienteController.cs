@@ -23,21 +23,7 @@ namespace ProjetoFinal
             }
             return true;
         }
-        /*private bool documentoValido(string valor)
-        {//para validar cpf e cnpj
-            foreach (char caractere in valor)
-            {
-                if (!char.IsDigit(caractere) &&
-                    caractere != ' ' &&
-                    caractere != '-' &&
-                    caractere != '.' &&
-                    caractere != '/')
-                {
-                    return false;
-                }
-            }
-            return true;
-        }*/
+
         private bool documentoValido(string valor,int tipo)//mudei para ser mais especifico, só n checa formatação
         {//para validar cpf e cnpj
             foreach (char caractere in valor)
@@ -57,7 +43,7 @@ namespace ProjetoFinal
         }
 
         //como tem atributos opcionais, será por query o Add + path os obrigatorios
-        [HttpPost("Add/{nome}/{telefone}/{email}/{endereco}")]
+        [HttpPost("Add/{nome}/{telefone}/{email}/{endereco}/{descricao}/{cpf}/{cnpj}/{status}")]
         public IActionResult postCliente(string nome, string telefone, string email, string endereco, string? descricao, string? cpf, string? cnpj, string? status)
         {
             try

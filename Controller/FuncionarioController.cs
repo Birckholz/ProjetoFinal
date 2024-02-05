@@ -33,20 +33,27 @@ public class FuncionarioController : Controller
 
 
     [HttpPost("Add/{idCargo}/{idDepartamento}/{nomeFuncionario}/{telefoneFuncionario}/{emailFuncionario}/{enderecoFuncionario}/{CPFFuncionario}/{tipoContrFuncionario}/{modoTrabFuncionario}/{formacaoRelevanteFuncionario}/{statusFuncionario}")]
-    public IActionResult addFuncionario(int idCargo, int idDepartamento, string CPFFuncionario, string emailFuncionario, string enderecoFuncionario, string formacaoRelevanteFuncionario, string modoTrabFuncionario, string nomeFuncionario, string statusFuncionario, string telefoneFuncionario, string tipoContrFuncionario)
+    public IActionResult addFuncionario(int idCargo, int? idDepartamento, string CPFFuncionario, string emailFuncionario, string enderecoFuncionario, string formacaoRelevanteFuncionario, string modoTrabFuncionario, string nomeFuncionario, string statusFuncionario, string telefoneFuncionario, string tipoContrFuncionario)
     {
         var _context = new ProjetoFinalContext();
         try
         {
+            int id=0;
+            Departamento? departamentoFunc=null;
             if (!validaCargo(idCargo))
             {
                 throw new ExceptionCustom("Cargo não foi encontrado");
             }
-            if (!validaDepartamento(idDepartamento))
+            if (idDepartamento!=null)
             {
-                throw new ExceptionCustom("Departamento não foi encontrado");
+                id=Convert.ToInt32(idDepartamento);
+                if(!validaDepartamento(id)){
+                    throw new ExceptionCustom("Departamento não foi encontrado");
+                }
+                else{
+                    departamentoFunc = findDepartamento(id);
+                }
             }
-
             if (nomeFuncionario.IsNullOrEmpty())
             {
                 throw new ExceptionCustom("Nome Invalido");
@@ -83,10 +90,9 @@ public class FuncionarioController : Controller
             {
                 throw new ExceptionCustom("Status Invalido");
             }
-            Departamento? departamentoFunc = findDepartamento(idDepartamento);
             Funcionario funcAdicionado = new Funcionario()
             {
-                idCargo = idCargo,
+                idCargo = id,
                 idDepartamento = idDepartamento,
                 CPFFuncionario = CPFFuncionario,
                 emailFuncionario = emailFuncionario,

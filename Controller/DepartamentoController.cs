@@ -8,8 +8,15 @@ namespace ProjetoFinal
     [Route("[controller]")]
     public class DepartamentoController : Controller
     {
+        private bool funcionarioValido(int idFuncionario)
+        {
+            var _context = new ProjetoFinalContext();
+            Funcionario? entityCheck = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
+            return entityCheck != null;
+        }
+        
         [HttpPost("Add{nome}/{responsavel}")]
-        public IActionResult postDepartamento(string nome,string responsavel)
+        public IActionResult postDepartamento(string nome,int responsavel)
         {
             try
             {
@@ -17,9 +24,9 @@ namespace ProjetoFinal
                 {
                     return BadRequest("O nome não pode ser nulo ou vazio");
                 }
-                if (string.IsNullOrWhiteSpace(responsavel))
+                if (!funcionarioValido(responsavel))
                 {
-                    return BadRequest("O responsável não pode ser nulo ou vazio");
+                    return BadRequest("O responsável não é válido");
                 }
                 Departamento departamento=new Departamento(){
                     nomeDepartamento=nome,
@@ -106,10 +113,11 @@ namespace ProjetoFinal
         }
 
         [HttpPut("Update/{idDepartamento}")]
-        public IActionResult putDepartamento(int idDepartamento, string? nome, string? responsavel)
+        public IActionResult putDepartamento(int idDepartamento, string? nome, int? responsavel)
         {
             try
             {
+                int idResponsavel=0;
                 var _context= new ProjetoFinalContext();
                 var departamento=_context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                 if (departamento == null)
@@ -126,8 +134,9 @@ namespace ProjetoFinal
                 }
                 if (responsavel!=null)
                 {
-                    if(!string.IsNullOrWhiteSpace(responsavel)){
-                        departamento.responsavelDepartamento=responsavel;
+                    idResponsavel=Convert.ToInt32(responsavel);
+                    if(funcionarioValido(idResponsavel)){
+                        departamento.responsavelDepartamento=idResponsavel;
                     }else{
                        return BadRequest("O responsavel não pode ser vazio");
                     }
