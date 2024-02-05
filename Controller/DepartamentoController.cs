@@ -14,9 +14,9 @@ namespace ProjetoFinal
             Funcionario? entityCheck = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
             return entityCheck != null;
         }
-        
+
         [HttpPost("Add{nome}/{responsavel}")]
-        public IActionResult postDepartamento(string nome,int responsavel)
+        public IActionResult postDepartamento(string nome, int responsavel)
         {
             try
             {
@@ -28,9 +28,10 @@ namespace ProjetoFinal
                 {
                     throw new ExceptionCustom("O responsável não é válido");
                 }
-                Departamento departamento=new Departamento(){
-                    nomeDepartamento=nome,
-                    responsavelDepartamento=responsavel
+                Departamento departamento = new Departamento()
+                {
+                    nomeDepartamento = nome,
+                    idResponsavel = responsavel
                 };
                 using (var _context = new ProjetoFinalContext())
                 {
@@ -54,11 +55,14 @@ namespace ProjetoFinal
         [HttpGet("Get")]
         public IActionResult getDepartamentos()
         {
-            try{
+            try
+            {
                 var _context = new ProjetoFinalContext();
                 DbSet<Departamento> retorno = _context.departamentos;
                 return Ok(retorno);
-            }catch(Exception e){
+            }
+            catch (Exception e)
+            {
                 ArquivoController.logErros(e.Message, "DepartamentoController");
                 return BadRequest(e.Message);
             }
@@ -140,28 +144,34 @@ namespace ProjetoFinal
         {
             try
             {
-                int idResponsavel=0;
-                var _context= new ProjetoFinalContext();
-                var departamento=_context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
+                int idResponsavel = 0;
+                var _context = new ProjetoFinalContext();
+                var departamento = _context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                 if (departamento == null)
                 {
                     throw new ExceptionCustom("Não foi possivel encontrar o departamento.");
                 }
-                if (nome!=null)
+                if (nome != null)
                 {
-                    if(!string.IsNullOrWhiteSpace(nome)){
-                        departamento.nomeDepartamento=nome;
-                    }else{
-                        throw new ExceptionCustom("O nome não pode ser nulo ou vazio");
+                    if (!string.IsNullOrWhiteSpace(nome))
+                    {
+                        departamento.nomeDepartamento = nome;
+                    }
+                    else
+                    {
+                        throw new ExceptionCustom("O nome não pode ser  nulo ou vazio");
                     }
                 }
-                if (responsavel!=null)
+                if (responsavel != null)
                 {
-                    idResponsavel=Convert.ToInt32(responsavel);
-                    if(funcionarioValido(idResponsavel)){
-                        departamento.responsavelDepartamento=idResponsavel;
-                    }else{
-                        throw new ExceptionCustom("O responsável não é válido");
+                    idResponsavel = Convert.ToInt32(responsavel);
+                    if (funcionarioValido(idResponsavel))
+                    {
+                        departamento.idResponsavel = idResponsavel;
+                    }
+                    else
+                    {
+                        return BadRequest("O responsavel não pode ser vazio");
                     }
                 }
                 _context.SaveChanges();

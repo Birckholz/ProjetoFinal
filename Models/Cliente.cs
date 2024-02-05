@@ -31,5 +31,10 @@ namespace ProjetoFinal
         public string? statusCliente { get; set; }
         public virtual ICollection<Projeto> clienteProjetos { get; set; } = null!;
 
+        public Cliente()
+        {
+            clienteProjetos = new List<Projeto>();
+        }
+
     }
 }

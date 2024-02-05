@@ -1,4 +1,5 @@
 
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,15 @@ public class ProjetoController : Controller
         return entityCheck != null;
     }
 
+    private Cliente? findCliente(int idCliente)
+    {
+        var _context = new ProjetoFinalContext();
+        Cliente? entityCheck = _context.clientes.FirstOrDefault(c => c.codCliente == idCliente);
+        return entityCheck;
+    }
+
+
+
     [HttpPost("Add/{codDepartamento}/{idCliente}/{nomeProjeto}/{valorProjeto}/{dataEntregaProjeto}")]
 
     public IActionResult addProjeto(int codDepartamento, int idCliente, string nomeProjeto, float valorProjeto, DateOnly dataEntregaProjeto)
@@ -45,7 +55,8 @@ public class ProjetoController : Controller
             {
                 throw new ExceptionCustom("Cliente não existe");
             }
-            _context.projetos.Add(new Projeto()
+            Cliente? cliente = findCliente(idCliente);
+            Projeto entityAdd = new Projeto()
             {
                 codDepartamento = codDepartamento,
                 idCliente = idCliente,
@@ -53,7 +64,12 @@ public class ProjetoController : Controller
                 statusProjeto = "Iniciado",
                 valorProjeto = valorProjeto,
                 dataEntregaProjeto = dataEntregaProjeto
-            });
+            };
+            if (cliente != null)
+            {
+                cliente.clienteProjetos.Add(entityAdd);
+            }
+            _context.projetos.Add(entityAdd);
             _context.SaveChanges();
             return Ok("Dados Inseridos");
         }

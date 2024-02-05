@@ -28,5 +28,10 @@ namespace ProjetoFinal
         public DateOnly dataEntregaProjeto { get; set; }
 
         public virtual ICollection<ProjetoFuncionario> funcionariosProj { get; set; } = null!;
+
+        public Projeto()
+        {
+            funcionariosProj = new List<ProjetoFuncionario>();
+        }
     }
 }

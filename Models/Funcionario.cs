@@ -43,5 +43,10 @@ namespace ProjetoFinal
 
 
         public virtual ICollection<ProjetoFuncionario> funcionariosProj { get; set; } = null!;
+
+        public Funcionario()
+        {
+            funcionariosProj = new List<ProjetoFuncionario>();
+        }
     }
 }

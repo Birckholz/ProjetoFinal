@@ -26,7 +26,6 @@ namespace ProjetoFinal
             {
                 escritor.WriteLine(entredaLog);
             };
-
         }
 
         private string arquivoProjDepart(string texto)

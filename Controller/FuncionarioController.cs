@@ -16,14 +16,26 @@ public class FuncionarioController : Controller
         return entityRetorno;
     }
 
+
+    private Cargo? findCargo(int idCargo)
+    {
+        var _context = new ProjetoFinalContext();
+        Cargo? entityRetorno = _context.cargos.FirstOrDefault(c => c.codCargo == idCargo);
+        return entityRetorno;
+    }
+
     private bool validaCargo(int idCargo)
     {
         var _context = new ProjetoFinalContext();
         Cargo? entityCheck = _context.cargos.FirstOrDefault(c => c.codCargo == idCargo);
         return entityCheck != null;
     }
-    private bool validaDepartamento(int idDepartamento)
+    private bool validaDepartamento(int? idDepartamento)
     {
+        if (idDepartamento == null)
+        {
+            return true;
+        }
         var _context = new ProjetoFinalContext();
         Departamento? entityCheck = _context.departamentos.FirstOrDefault(d => d.codDepartamento == idDepartamento);
         return entityCheck != null;
@@ -35,24 +47,18 @@ public class FuncionarioController : Controller
     [HttpPost("Add/{idCargo}/{idDepartamento}/{nomeFuncionario}/{telefoneFuncionario}/{emailFuncionario}/{enderecoFuncionario}/{CPFFuncionario}/{tipoContrFuncionario}/{modoTrabFuncionario}/{formacaoRelevanteFuncionario}/{statusFuncionario}")]
     public IActionResult addFuncionario(int idCargo, int? idDepartamento, string CPFFuncionario, string emailFuncionario, string enderecoFuncionario, string formacaoRelevanteFuncionario, string modoTrabFuncionario, string nomeFuncionario, string statusFuncionario, string telefoneFuncionario, string tipoContrFuncionario)
     {
+        Departamento? departamentoFunc = null;
         var _context = new ProjetoFinalContext();
         try
         {
-            int id=0;
-            Departamento? departamentoFunc=null;
+
             if (!validaCargo(idCargo))
             {
                 throw new ExceptionCustom("Cargo não foi encontrado");
             }
-            if (idDepartamento!=null)
+            if (!validaDepartamento(idDepartamento))
             {
-                id=Convert.ToInt32(idDepartamento);
-                if(!validaDepartamento(id)){
-                    throw new ExceptionCustom("Departamento não foi encontrado");
-                }
-                else{
-                    departamentoFunc = findDepartamento(id);
-                }
+                throw new ExceptionCustom("Departamento não foi encontrado");
             }
             if (nomeFuncionario.IsNullOrEmpty())
             {
@@ -90,9 +96,15 @@ public class FuncionarioController : Controller
             {
                 throw new ExceptionCustom("Status Invalido");
             }
+            if (idDepartamento != null)
+            {
+                departamentoFunc = findDepartamento(idDepartamento ?? -1);
+            }
+            Cargo? cargoFunc = findCargo(idCargo);
+
             Funcionario funcAdicionado = new Funcionario()
             {
-                idCargo = id,
+                idCargo = idCargo,
                 idDepartamento = idDepartamento,
                 CPFFuncionario = CPFFuncionario,
                 emailFuncionario = emailFuncionario,
@@ -108,6 +120,10 @@ public class FuncionarioController : Controller
             if (departamentoFunc != null)
             {
                 departamentoFunc.funcionariosDepartamento.Add(funcAdicionado);
+            }
+            if (cargoFunc != null)
+            {
+                cargoFunc.funcionarioCargos.Add(funcAdicionado);
             }
             _context.SaveChanges();
             return Ok("Dados Inseridos");

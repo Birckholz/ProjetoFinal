@@ -16,8 +16,8 @@ public class ProjetoFinalContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //Não esquecer de mudar Server= ao clonar
-        //optionsBuilder.UseSqlServer(@"Server=GUILHERME2943\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
-        optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer(@"Server=COMPUTADORDEGUI\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        // optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,11 +54,11 @@ public class ProjetoFinalContext : DbContext
             .HasConstraintName("FkIdCargo");
 
         modelBuilder.Entity<Departamento>()
-            .HasOne(d => d.fkresponsavelDepartamento)
-            .WithOne()
-            .HasForeignKey(d => d.responsavelDepartamento)
+            .HasOne(d => d.fkResponsavelDepartamento)
+            .WithMany()
+            .HasForeignKey(d => d.idResponsavel)
             .OnDelete(DeleteBehavior.SetNull)
-            .HasConstraintName("FkIdCargo");
+            .HasConstraintName("FkIdResponsavel");
 
         base.OnModelCreating(modelBuilder);
     }

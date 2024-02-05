@@ -22,6 +22,20 @@ public class ProjetoFuncionarioController : Controller
         return entityCheck != null;
     }
 
+    private Funcionario? findFuncionario(int idFuncionario)
+    {
+        var _context = new ProjetoFinalContext();
+        Funcionario? entityCheck = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
+        return entityCheck;
+    }
+
+    private Projeto? findProjeto(int idProjeto)
+    {
+        var _context = new ProjetoFinalContext();
+        Projeto? entityCheck = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
+        return entityCheck;
+    }
+
     [HttpPost("Add/{idProjeto}/{idFuncionario}")]
     public IActionResult addFuncionarioProj(int idFuncionario, int idProjeto)
     {
@@ -36,11 +50,19 @@ public class ProjetoFuncionarioController : Controller
             {
                 throw new ExceptionCustom("Funcionario não encontrado");
             }
-            _context.funcionariosProjeto.Add(new ProjetoFuncionario()
+            ProjetoFuncionario entityAdd = new ProjetoFuncionario()
             {
                 idFuncionario = idFuncionario,
                 idProjeto = idProjeto
-            });
+            };
+            Projeto? projeto = findProjeto(idProjeto);
+            Funcionario? funcionario = findFuncionario(idFuncionario);
+            if (projeto != null && funcionario != null)
+            {
+                projeto.funcionariosProj.Add(entityAdd);
+                funcionario.funcionariosProj.Add(entityAdd);
+            }
+            _context.funcionariosProjeto.Add(entityAdd);
             _context.SaveChanges();
             return Ok("Dados Inseridos");
         }
