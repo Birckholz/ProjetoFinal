@@ -41,17 +41,20 @@ public class ProjetoFuncionarioController : Controller
                 idFuncionario = idFuncionario,
                 idProjeto = idProjeto
             });
+            _context.SaveChanges();
+            return Ok("Dados Inseridos");
         }
         catch (ExceptionCustom e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ProjetoFuncionarioController");
+            return NotFound(e.Message);
         }
         catch (Exception t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ProjetoFuncionarioController");
+            return BadRequest(t.Message);
         }
-        _context.SaveChanges();
-        return Ok("Dados Inseridos");
+
     }
 
     [HttpDelete("Update/{idProjeto}/{idFuncionario}")]
@@ -77,10 +80,12 @@ public class ProjetoFuncionarioController : Controller
         }
         catch (ExceptionCustom e)
         {
+            ArquivoController.logErros(e.Message, "ProjetoFuncionarioController");
             System.Console.WriteLine(e.Message);
         }
         catch (Exception t)
         {
+            ArquivoController.logErros(t.Message, "ProjetoFuncionarioController");
             System.Console.WriteLine(t.Message);
         }
         return NotFound("Não foi possivel encontrar esse registro.");

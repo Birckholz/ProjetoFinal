@@ -11,6 +11,24 @@ namespace ProjetoFinal
     public class ArquivoController : Controller
     {
 
+        public static void logErros(string errorMessage, string lugar)
+        {
+            string pasta = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+            string txtErros = "LogErrors.txt";
+            string path = Path.Combine(pasta, txtErros);
+            if (!System.IO.File.Exists(path))
+            {
+                using (FileStream fs = System.IO.File.Create(path)) { };
+            }
+            DateTime horarioDoErro = DateTime.Now;
+            string entredaLog = $"[{horarioDoErro}]" + $"[{lugar}]" + errorMessage + "\n";
+            using (StreamWriter escritor = System.IO.File.AppendText(path))
+            {
+                escritor.WriteLine(entredaLog);
+            };
+
+        }
+
         private string arquivoProjDepart(string texto)
         {
             texto = "____________________________________EMPRESA ____________________________________" +

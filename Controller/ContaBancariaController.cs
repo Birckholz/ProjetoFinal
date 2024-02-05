@@ -50,12 +50,12 @@ public class ContaBancariaController : Controller
         }
         catch (ExceptionCustom e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ContaBancariaController");
             return NotFound(e.Message);
         }
         catch (Exception t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ContaBancariaController");
             return BadRequest(t.Message);
         }
 
@@ -89,12 +89,12 @@ public class ContaBancariaController : Controller
         }
         catch (ExceptionCustom e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ContaBancariaController");
             return NotFound(e.Message);
         }
         catch (Exception t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ContaBancariaController");
             return BadRequest(t.Message);
         }
 
@@ -114,12 +114,12 @@ public class ContaBancariaController : Controller
         }
         catch (ExceptionCustom e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ContaBancariaController");
             return BadRequest(e.Message);
         }
         catch (Exception t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ContaBancariaController");
             return BadRequest(t.Message);
         }
     }
@@ -139,12 +139,12 @@ public class ContaBancariaController : Controller
         }
         catch (ExceptionCustom e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ContaBancariaController");
             return NotFound(e.Message);
         }
         catch (Exception t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ContaBancariaController");
             return BadRequest(t.Message);
         }
     }
@@ -165,12 +165,12 @@ public class ContaBancariaController : Controller
         }
         catch (ExceptionCustom e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ContaBancariaController");
             return NotFound(e.Message);
         }
         catch (Exception t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ContaBancariaController");
             return NotFound(t.Message);
         }
     }

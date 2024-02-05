@@ -16,6 +16,19 @@ public class FuncionarioController : Controller
         return entityRetorno;
     }
 
+    private bool validaCargo(int idCargo)
+    {
+        var _context = new ProjetoFinalContext();
+        Cargo? entityCheck = _context.cargos.FirstOrDefault(c => c.codCargo == idCargo);
+        return entityCheck != null;
+    }
+    private bool validaDepartamento(int idDepartamento)
+    {
+        var _context = new ProjetoFinalContext();
+        Departamento? entityCheck = _context.departamentos.FirstOrDefault(d => d.codDepartamento == idDepartamento);
+        return entityCheck != null;
+    }
+
 
 
 
@@ -25,6 +38,14 @@ public class FuncionarioController : Controller
         var _context = new ProjetoFinalContext();
         try
         {
+            if (!validaCargo(idCargo))
+            {
+                throw new ExceptionCustom("Cargo não foi encontrado");
+            }
+            if (!validaDepartamento(idDepartamento))
+            {
+                throw new ExceptionCustom("Departamento não foi encontrado");
+            }
 
             if (nomeFuncionario.IsNullOrEmpty())
             {
@@ -87,12 +108,12 @@ public class FuncionarioController : Controller
         }
         catch (ExceptionCustom e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "FuncionarioController");
             return NotFound(e.Message);
         }
         catch (Exception t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "FuncionarioController");
             return BadRequest(t.Message);
         }
 
@@ -108,7 +129,7 @@ public class FuncionarioController : Controller
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "FuncionarioController");
             return BadRequest(e.Message);
         }
 
@@ -129,13 +150,13 @@ public class FuncionarioController : Controller
         }
         catch (ExceptionCustom t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "FuncionarioController");
             return NotFound(t.Message);
 
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "FuncionarioController");
             return BadRequest(e.Message);
         }
     }
@@ -156,12 +177,12 @@ public class FuncionarioController : Controller
         }
         catch (ExceptionCustom t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "FuncionarioController");
             return NotFound(t.Message);
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "FuncionarioController");
             return BadRequest(e.Message);
         }
     }
@@ -219,12 +240,12 @@ public class FuncionarioController : Controller
         }
         catch (ExceptionCustom t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "FuncionarioController");
             return NotFound(t.Message);
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "FuncionarioController");
             return BadRequest(e.Message);
         }
 

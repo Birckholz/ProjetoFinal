@@ -59,12 +59,12 @@ public class ProjetoController : Controller
         }
         catch (ExceptionCustom e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ProjetoController");
             return NotFound(e.Message);
         }
         catch (Exception t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ProjetoController");
             return BadRequest(t.Message);
 
         }
@@ -86,12 +86,12 @@ public class ProjetoController : Controller
         }
         catch (ExceptionCustom t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ProjetoController");
             return NotFound(t.Message);
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ProjetoController");
             return BadRequest(e.Message);
         }
 
@@ -113,12 +113,12 @@ public class ProjetoController : Controller
         }
         catch (ExceptionCustom t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ProjetoController");
             return NotFound(t.Message);
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ProjetoController");
             return BadRequest(e.Message);
         }
     }
@@ -139,12 +139,12 @@ public class ProjetoController : Controller
         }
         catch (ExceptionCustom t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ProjetoController");
             return NotFound(t.Message);
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ProjetoController");
             return BadRequest(e.Message);
         }
 
@@ -191,12 +191,12 @@ public class ProjetoController : Controller
         }
         catch (ExceptionCustom t)
         {
-            System.Console.WriteLine(t.Message);
+            ArquivoController.logErros(t.Message, "ProjetoController");
             return NotFound(t.Message);
         }
         catch (Exception e)
         {
-            System.Console.WriteLine(e.Message);
+            ArquivoController.logErros(e.Message, "ProjetoController");
             return BadRequest(e.Message);
         }
     }
