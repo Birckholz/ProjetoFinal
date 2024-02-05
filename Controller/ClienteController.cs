@@ -23,7 +23,7 @@ namespace ProjetoFinal
             }
             return true;
         }
-        private bool documentoValido(string valor)
+        /*private bool documentoValido(string valor)
         {//para validar cpf e cnpj
             foreach (char caractere in valor)
             {
@@ -35,6 +35,23 @@ namespace ProjetoFinal
                 {
                     return false;
                 }
+            }
+            return true;
+        }*/
+        private bool documentoValido(string valor,int tipo)//mudei para ser mais especifico, só n checa formatação
+        {//para validar cpf e cnpj
+            foreach (char caractere in valor)
+            {
+                if (!char.IsDigit(caractere) &&
+                    caractere != ' ' &&
+                    caractere != '-' &&
+                    caractere != '.')
+                {
+                    if(tipo==1 &&
+                    caractere != '/')
+                    return false;
+                }
+                return false;
             }
             return true;
         }
@@ -65,11 +82,11 @@ namespace ProjetoFinal
                 {
                     return BadRequest("O cliente precisa de CPF ou CNPJ");
                 }
-                if (cpf != null && !documentoValido(cpf))
+                if (cpf != null && !documentoValido(cpf,0))
                 {
                     return BadRequest("O CPF não é válido");
                 }
-                if (cnpj != null && !documentoValido(cnpj))
+                if (cnpj != null && !documentoValido(cnpj,1))
                 {
                     return BadRequest("O CNPJ não é válido");
                 }
@@ -218,7 +235,7 @@ namespace ProjetoFinal
                 }
                 if (cpf != null)
                 {
-                    if (documentoValido(cpf))
+                    if (documentoValido(cpf,0))
                     {
                         cliente.PessFCPFCliente = cpf;
                     }
@@ -229,7 +246,7 @@ namespace ProjetoFinal
                 }
                 if (cnpj != null)
                 {
-                    if (documentoValido(cnpj))
+                    if (documentoValido(cnpj,1))
                     {
                         cliente.PessJCNPJCliente = cnpj;
                     }
