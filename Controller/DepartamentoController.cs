@@ -121,9 +121,20 @@ namespace ProjetoFinal
                     if(DepartamentoNulo ==null){
                         Funcionario? funcNulo= _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
                         if (funcNulo == null){//se não existe, cria o nulo
+                            var cargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");
+                            if(cargoNulo ==null){//se não existe ou foi excluido
+                                Cargo cargo = new Cargo()
+                                {
+                                    nomeCargo = "Cargo nao definido",
+                                    salarioBase = 0
+                                };
+                                _context.cargos.Add(cargo);
+                                _context.SaveChanges();
+                                cargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");//procura novamente
+                            }
                             funcNulo = new Funcionario()
                             {
-                                idCargo = null,
+                                idCargo = cargoNulo.codCargo,
                                 idDepartamento = null,
                                 CPFFuncionario = "000",
                                 emailFuncionario = "000",

@@ -50,21 +50,23 @@ public class ProjetoFinalContext : DbContext
             .HasOne(f => f.fkCodCargo)
             .WithMany(c => c.funcionarioCargos)
             .HasForeignKey(f => f.idCargo)
-            .OnDelete(DeleteBehavior.SetNull)
+            .OnDelete(DeleteBehavior.NoAction)//mudança aqui também, pois o funcionário deve ter cargo
             .HasConstraintName("FkIdCargo");
 
         modelBuilder.Entity<Departamento>()
             .HasOne(d => d.fkResponsavelDepartamento)
             .WithMany()
             .HasForeignKey(d => d.idResponsavel)
-            .OnDelete(DeleteBehavior.SetNull)
+            //recomendação do erro: A introdução da restrição FOREIGN KEY 'FkIdResponsavel' na tabela 'departamentos' pode causar ciclos ou vários caminhos em cascata. Especifique ON DELETE NO ACTION ou ON UPDATE NO ACTION, ou modifique outras restrições FOREIGN KEY.
+//Não foi possível criar a restrição ou o índice. Consulte os erros anteriores.
+            .OnDelete(DeleteBehavior.NoAction)
             .HasConstraintName("FkIdResponsavel");
         //deu um erro de duplicar o idDepartamento , tirando fica normal
-        /* modelBuilder.Entity<Projeto>()
+        /*modelBuilder.Entity<Projeto>()
              .HasOne(p => p.fkCodDepartamento)
              .WithMany()
              .HasForeignKey(d => d.codDepartamento)
-             .OnDelete(DeleteBehavior.SetNull)
+             .OnDelete(DeleteBehavior.NoAction)
              .HasConstraintName("FkcodDepartamento");*/
 
         base.OnModelCreating(modelBuilder);

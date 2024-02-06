@@ -11,7 +11,7 @@ namespace ProjetoFinal
         [Key]
         public int codFuncionario { get; set; }
 
-        public int? idCargo { get; set; }
+        public int idCargo { get; set; }
         public virtual Cargo? fkCodCargo { get; set; }
 
         public int? idDepartamento { get; set; }
