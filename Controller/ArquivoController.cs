@@ -128,7 +128,7 @@ namespace ProjetoFinal
                     //Lógica para achar departamento e projetos
                     sw.Write(arquivoProjDepart(texto));
                 }
-                return Ok("O arquivo foi criado na pasta de dowloads");
+                return Ok("O arquivo foi criado na pasta de downloads");
             }
             catch (Exception e)
             {
@@ -161,7 +161,7 @@ namespace ProjetoFinal
                 {
                     sw.Write(arquivoProjFuncio(texto, funcionario));
                 }
-                return Ok("O arquivo foi criado na pasta de dowloads");
+                return Ok("O arquivo foi criado na pasta de downloads");
             }
             catch (Exception e)
             {

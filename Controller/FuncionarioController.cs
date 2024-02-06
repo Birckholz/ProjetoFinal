@@ -129,7 +129,7 @@ public class FuncionarioController : Controller
             }
             if (idDepartamento != null)
             {
-                departamentoFunc = findDepartamento(idDepartamento ?? -1);
+                departamentoFunc = findDepartamento(idDepartamento ?? -1);// Se for nulo, atribui o valor -1 a idDepartamento
             }
             Cargo? cargoFunc = findCargo(idCargo);
 
@@ -225,7 +225,30 @@ public class FuncionarioController : Controller
             {
                 throw new ExceptionCustom("Funcionario não encontrado");
             }
+            //vamos checar se é responsável por departamento, se for , não vai poder mudar ,vai jogar excessao, pedindo pra mudar o responsavel do departamento
+            Departamento? departamento = _context.departamentos.FirstOrDefault(f => f.idResponsavel == idFuncionario);
+            if(departamento==null){
+                throw new ExceptionCustom("Funcionario é responsável por um departamento, primeiro altere o responsável pelo departamento");
+            }
+
+            //vai remover as conexoes de projeto+funcionario
+            foreach (ProjetoFuncionario pj in _context.funcionariosProjeto)
+            {
+                if (pj.idFuncionario == idFuncionario)
+                {
+                    _context.funcionariosProjeto.Remove(pj);
+                }
+            }
+            //vai remover a conta bancária do funcionario
+            foreach (ContaBancaria c in _context.contasBancarias)
+            {
+                if (c.codFuncionario == idFuncionario)
+                {
+                    _context.contasBancarias.Remove(c);
+                }
+            }
             _context.funcionarios.Remove(entityRemove);
+            _context.SaveChanges();
             return Ok("Funcionario removido com sucesso.");
         }
         catch (ExceptionCustom t)

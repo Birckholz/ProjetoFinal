@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ProjetoFinal
 {
@@ -155,7 +157,11 @@ namespace ProjetoFinal
             {
                 using (var _context = new ProjetoFinalContext())
                 {
-                    var ClienteNulo = _context.clientes.FirstOrDefault(x => x.nomeCliente == "Cliente excluido");
+                    var ClienteNulo = _context.clientes.FirstOrDefault(x => x.nomeCliente == "Cliente excluido");//se quiser tirar um cliente,não quero excluir dados de um projeto que a empresa criou, pois esses dados fazem parte do portfolio dela
+                    if(ClienteNulo ==null){
+                        postCliente("Cliente excluido","000", "000", "000", null,null,null,null);
+                        ClienteNulo = _context.clientes.FirstOrDefault(x => x.nomeCliente == "Cliente excluido");
+                    }
                     var item = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
                     if (item == null)
                     {
@@ -163,9 +169,10 @@ namespace ProjetoFinal
                     }
                     foreach (Projeto projeto in _context.projetos)
                     {
-                        if (projeto.idCliente == idCliente && ClienteNulo != null)
+                        if (projeto.idCliente == idCliente)
                         {
                             projeto.idCliente = ClienteNulo.codCliente;
+                            projeto.descricaoProjeto+=" Cliente: "+ item.nomeCliente;//isso fará com que descrição do projeto tenha o nome do cliente para qual foi feito ,mesmo que ele seja excluido
                         }
                     }
                     _context.clientes.Remove(item);

@@ -15,6 +15,13 @@ namespace ProjetoFinal
             return entityCheck != null;
         }
 
+        private bool funcionarioResponsavelDepartamento(int idFuncionario)
+        {
+            var _context = new ProjetoFinalContext();
+            Departamento? entityCheck = _context.departamentos.FirstOrDefault(f => f.idResponsavel == idFuncionario);
+            return entityCheck != null;
+        }
+
         [HttpPost("Add{nome}/{responsavel}")]
         public IActionResult postDepartamento(string nome, int responsavel)
         {
@@ -24,7 +31,7 @@ namespace ProjetoFinal
                 {
                     throw new ExceptionCustom("O nome não pode ser nulo ou vazio");
                 }
-                if (!funcionarioValido(responsavel))
+                if (!funcionarioValido(responsavel) && !funcionarioResponsavelDepartamento(responsavel))
                 {
                     throw new ExceptionCustom("O responsável não é válido");
                 }
@@ -38,7 +45,7 @@ namespace ProjetoFinal
                     _context.departamentos.Add(departamento);
                     _context.SaveChanges();
                     var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
-                    funcRespon.idDepartamento=departamento.codDepartamento;
+                    funcRespon.idDepartamento=departamento.codDepartamento;//como precisamos ter adicionado um responsavel que ja foi checado e não pode ser nulo, funcRespon não será nulo.
                     return new ObjectResult(departamento);
                 }
             }
@@ -104,22 +111,49 @@ namespace ProjetoFinal
             {
                 using (var _context = new ProjetoFinalContext())
                 {
-                    var DepartamentoNulo = _context.departamentos.FirstOrDefault(x => x.nomeDepartamento == "Departamento nao definido");
+                    var DepartamentoNulo = _context.departamentos.FirstOrDefault(x => x.nomeDepartamento == "Departamento nao definido");//se quiser tirar um departamento, não quero ter que excluir funcionários e refazer cadastro                 
                     var item = _context.departamentos.FirstOrDefault(y => y.codDepartamento == idDepartamento);
                     if (item == null)
                     {
                         throw new ExceptionCustom("Não foi possivel encontrar o departamento.");
                     }
+                    //se formos excluir
+                    if(DepartamentoNulo ==null){
+                        Funcionario? funcNulo= _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
+                        if (funcNulo == null){//se não existe, cria o nulo
+                            funcNulo = new Funcionario()
+                            {
+                                idCargo = null,
+                                idDepartamento = null,
+                                CPFFuncionario = "000",
+                                emailFuncionario = "000",
+                                enderecoFuncionario = "000",
+                                formacaoRelevanteFuncionario = null,
+                                nomeFuncionario = "Funcionario Nulo",
+                                statusFuncionario = "000",
+                                modoTrabFuncionario = null,
+                                telefoneFuncionario = "000",
+                                tipoContrFuncionario = null
+                            };
+                            _context.funcionarios.Add(funcNulo);
+                            _context.SaveChanges();
+                            funcNulo= _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
+                        }
+                        postDepartamento("Departamento nao definido",funcNulo.codFuncionario);
+                        DepartamentoNulo = _context.departamentos.FirstOrDefault(x => x.nomeDepartamento == "Departamento nao definido");
+                    }
+
                     foreach (Projeto projeto in _context.projetos)
                     {
-                        if (projeto.codDepartamento == idDepartamento && DepartamentoNulo != null)
+                        if (projeto.codDepartamento == idDepartamento)
                         {
                             projeto.codDepartamento = DepartamentoNulo.codDepartamento;
+                            projeto.descricaoProjeto+=" Departamento: "+ item.nomeDepartamento;//isso fará com que descrição do projeto tenha o nome do departamento que o fez
                         }
                     }
                     foreach (Funcionario funcionario in _context.funcionarios)
                     {
-                        if (funcionario.idDepartamento == idDepartamento && DepartamentoNulo != null)
+                        if (funcionario.idDepartamento == idDepartamento)
                         {
                             funcionario.idDepartamento = DepartamentoNulo.codDepartamento;
                         }
@@ -141,7 +175,7 @@ namespace ProjetoFinal
             }
         }
 
-        [HttpPut("Update/{idDepartamento}")]
+        [HttpPut("Update/{idDepartamento}")]//para modificações query
         public IActionResult putDepartamento(int idDepartamento, string? nome, int? responsavel)
         {
             try
@@ -167,7 +201,7 @@ namespace ProjetoFinal
                 if (responsavel != null)
                 {
                     idResponsavel = Convert.ToInt32(responsavel);
-                    if (funcionarioValido(idResponsavel))
+                    if (funcionarioValido(idResponsavel) && funcionarioResponsavelDepartamento(idResponsavel))
                     {
                         departamento.idResponsavel = idResponsavel;
                         var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);

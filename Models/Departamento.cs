@@ -13,6 +13,7 @@ namespace ProjetoFinal
         [MaxLength(50)]
         [Required]
         public string? nomeDepartamento { get; set; }
+        //n esta dando certo ,apenas se colocar int?, mas como quero que seja obrigatoria, posso colocar Required e int?
         public int idResponsavel { get; set; }
         [ForeignKey("idResponsavel")]
         public virtual Funcionario? fkResponsavelDepartamento { get; set; }

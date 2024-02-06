@@ -96,7 +96,12 @@ namespace ProjetoFinal
             {
                 using (var _context = new ProjetoFinalContext())
                 {
-                    var CargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");
+                    var CargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");//se quiser tirar um cargo, não quero excluir funcionarios com esse cargo, então caso um cargo deixe de existir,
+                    //quero que os funcionarios fiquem com um cargo nulo, depois pode-se modificar para colocar o novo cargo ao qual vão pertencer
+                    if(CargoNulo ==null){//se não existe ou foi excluido
+                        postCargo("Cargo nao definido",0);
+                        CargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");//procura novamente
+                    }
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                     if (item == null)
                     {
@@ -104,7 +109,7 @@ namespace ProjetoFinal
                     }
                     foreach (Funcionario funcionario in _context.funcionarios)
                     {
-                        if (funcionario.idCargo == idCargo && CargoNulo != null)
+                        if (funcionario.idCargo == idCargo)
                         {
                             funcionario.idCargo = CargoNulo.codCargo;
                         }

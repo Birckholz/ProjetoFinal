@@ -148,7 +148,16 @@ public class ProjetoController : Controller
             Projeto? entityRemove = _context.projetos.FirstOrDefault(p => p.codProjeto == idProjeto);
             if (entityRemove != null)
             {
+                //vai remover as conexoes de projeto+funcionario
+                foreach (ProjetoFuncionario pj in _context.funcionariosProjeto)
+                    {
+                        if (pj.idProjeto == idProjeto)
+                        {
+                            _context.funcionariosProjeto.Remove(pj);
+                        }
+                    }
                 _context.projetos.Remove(entityRemove);
+                _context.SaveChanges();
                 return Ok("Projeto removido com sucesso.");
             }
             throw new ExceptionCustom("Não foi possivel encontrar o projeto");
