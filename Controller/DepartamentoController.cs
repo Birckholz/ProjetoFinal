@@ -15,7 +15,7 @@ namespace ProjetoFinal
             return entityCheck != null;
         }
 
-        private bool funcionarioResponsavelDepartamento(int idFuncionario)
+        private bool funcionarioResponsavelDepartamento(int idFuncionario)//true quando tiver ja um departamento em nome do funcionario
         {
             var _context = new ProjetoFinalContext();
             Departamento? entityCheck = _context.departamentos.FirstOrDefault(f => f.idResponsavel == idFuncionario);
@@ -31,7 +31,7 @@ namespace ProjetoFinal
                 {
                     throw new ExceptionCustom("O nome não pode ser nulo ou vazio");
                 }
-                if (!funcionarioValido(responsavel) && !funcionarioResponsavelDepartamento(responsavel))
+                if (!funcionarioValido(responsavel) && funcionarioResponsavelDepartamento(responsavel))
                 {
                     throw new ExceptionCustom("O responsável não é válido");
                 }
@@ -212,15 +212,15 @@ namespace ProjetoFinal
                 if (responsavel != null)
                 {
                     idResponsavel = Convert.ToInt32(responsavel);
-                    if (funcionarioValido(idResponsavel) && funcionarioResponsavelDepartamento(idResponsavel))
+                    if (funcionarioValido(idResponsavel) && !funcionarioResponsavelDepartamento(idResponsavel))
                     {
                         departamento.idResponsavel = idResponsavel;
-                        var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
+                        var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == idResponsavel);
                         funcRespon.idDepartamento=departamento.codDepartamento;
                     }
                     else
                     {
-                        return BadRequest("O responsavel não pode ser vazio");
+                        return BadRequest("O responsavel não pode ser atualizado");
                     }
                 }
                 _context.SaveChanges();
