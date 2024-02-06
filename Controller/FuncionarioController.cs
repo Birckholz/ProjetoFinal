@@ -258,8 +258,12 @@ public class FuncionarioController : Controller
             }
             if (!telefoneFuncionario.IsNullOrEmpty())
             {
-                if(telefoneValido(telefoneFuncionario)){
-                    entityUpdate.telefoneFuncionario = telefoneFuncionario;
+                if (telefoneFuncionario != null)
+                {
+                    if (telefoneValido(telefoneFuncionario))
+                    {
+                        entityUpdate.telefoneFuncionario = telefoneFuncionario;
+                    }
                 }
             }
             if (!enderecoFuncionario.IsNullOrEmpty())
@@ -272,9 +276,14 @@ public class FuncionarioController : Controller
             }
             if (!CPFFuncionario.IsNullOrEmpty())
             {
-                if(documentoValido(CPFFuncionario)){
-                    entityUpdate.CPFFuncionario = CPFFuncionario;
+                if (CPFFuncionario != null)
+                {
+                    if (documentoValido(CPFFuncionario))
+                    {
+                        entityUpdate.CPFFuncionario = CPFFuncionario;
+                    }
                 }
+
             }
             if (!tipoContrFuncionario.IsNullOrEmpty())
             {

@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Reflection;
 
 namespace ProjetoFinal
 {
@@ -164,6 +168,40 @@ namespace ProjetoFinal
                 ArquivoController.logErros(e.Message, "ArquivoController");
                 return BadRequest(e.Message);
             }
+        }
+
+        [HttpGet("ToText/dasda")]
+        public IActionResult getTxt()
+        {
+            return Ok(sqlToTxt<Cliente>(new ProjetoFinalContext()));
+        }
+
+        private string sqlToTxt<T>(DbContext context) where T : class
+        {
+            string test = "";
+            int currentEntityIndex = 1;
+            var _context = context.Set<T>();
+            while (currentEntityIndex != _context.Count() + 1)
+            {
+                var entity = _context.Find(currentEntityIndex);
+                if (entity != null)
+                {
+                    var props = entity.GetType().GetProperties();
+                    for (int i = 0; i < props.Length - 1; i++)
+                    {
+                        var attributeEntity = props[i];
+                        var value = attributeEntity.GetValue(entity);
+                        if (value != null)
+                        {
+                            test += value.ToString();
+                        }
+
+                    }
+                }
+                test += '\n';
+                currentEntityIndex++;
+            }
+            return test;
         }
 
     }
