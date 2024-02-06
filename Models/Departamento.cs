@@ -19,10 +19,12 @@ namespace ProjetoFinal
 
 
         public ICollection<Funcionario> funcionariosDepartamento { get; set; }
+        public ICollection<Projeto> projetosDepartamento { get; set; }
 
         public Departamento()
         {
             funcionariosDepartamento = new List<Funcionario>();
+            projetosDepartamento = new List<Projeto>();
         }
 
     }

@@ -60,6 +60,13 @@ public class ProjetoFinalContext : DbContext
             .OnDelete(DeleteBehavior.SetNull)
             .HasConstraintName("FkIdResponsavel");
 
+        modelBuilder.Entity<Projeto>()
+            .HasOne(p => p.fkCodDepartamento)
+            .WithMany()
+            .HasForeignKey(d => d.codDepartamento)
+            .OnDelete(DeleteBehavior.SetNull)
+            .HasConstraintName("FkIdResponsavel");
+
         base.OnModelCreating(modelBuilder);
     }
 
