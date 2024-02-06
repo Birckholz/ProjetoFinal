@@ -16,8 +16,8 @@ public class ProjetoFinalContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //Não esquecer de mudar Server= ao clonar
-        optionsBuilder.UseSqlServer(@"Server=COMPUTADORDEGUI\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
-        // optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        //optionsBuilder.UseSqlServer(@"Server=COMPUTADORDEGUI\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -59,13 +59,13 @@ public class ProjetoFinalContext : DbContext
             .HasForeignKey(d => d.idResponsavel)
             .OnDelete(DeleteBehavior.SetNull)
             .HasConstraintName("FkIdResponsavel");
-
-        modelBuilder.Entity<Projeto>()
+//deu um erro de duplicar o idDepartamento , tirando fica normal
+       /* modelBuilder.Entity<Projeto>()
             .HasOne(p => p.fkCodDepartamento)
             .WithMany()
             .HasForeignKey(d => d.codDepartamento)
             .OnDelete(DeleteBehavior.SetNull)
-            .HasConstraintName("FkIdResponsavel");
+            .HasConstraintName("FkcodDepartamento");*/
 
         base.OnModelCreating(modelBuilder);
     }

@@ -37,6 +37,8 @@ namespace ProjetoFinal
                 {
                     _context.departamentos.Add(departamento);
                     _context.SaveChanges();
+                    var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
+                    funcRespon.idDepartamento=departamento.codDepartamento;
                     return new ObjectResult(departamento);
                 }
             }
@@ -168,6 +170,8 @@ namespace ProjetoFinal
                     if (funcionarioValido(idResponsavel))
                     {
                         departamento.idResponsavel = idResponsavel;
+                        var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
+                        funcRespon.idDepartamento=departamento.codDepartamento;
                     }
                     else
                     {

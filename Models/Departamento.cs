@@ -13,7 +13,7 @@ namespace ProjetoFinal
         [MaxLength(50)]
         [Required]
         public string? nomeDepartamento { get; set; }
-        public int? idResponsavel { get; set; }
+        public int idResponsavel { get; set; }
         [ForeignKey("idResponsavel")]
         public virtual Funcionario? fkResponsavelDepartamento { get; set; }
 

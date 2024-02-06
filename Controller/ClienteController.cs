@@ -34,10 +34,11 @@ namespace ProjetoFinal
                     caractere != '.')
                 {
                     if(tipo==1 &&
-                    caractere != '/')
+                    caractere != '/'){
+                    return false;
+                    }
                     return false;
                 }
-                return false;
             }
             return true;
         }

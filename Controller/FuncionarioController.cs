@@ -41,6 +41,37 @@ public class FuncionarioController : Controller
         return entityCheck != null;
     }
 
+    private bool telefoneValido(string telefone)
+    {
+        foreach (char caractere in telefone)
+        {
+            if (!char.IsDigit(caractere) &&
+                caractere != ' ' &&
+                caractere != '-' &&
+                caractere != '+' &&
+                caractere != '(' &&
+                caractere != ')')
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private bool documentoValido(string valor)
+    {//para validar cpf e cnpj
+        foreach (char caractere in valor)
+        {
+            if (!char.IsDigit(caractere) &&
+                caractere != ' ' &&
+                caractere != '-' &&
+                caractere != '.')
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
 
@@ -64,7 +95,7 @@ public class FuncionarioController : Controller
             {
                 throw new ExceptionCustom("Nome Invalido");
             }
-            if (telefoneFuncionario.IsNullOrEmpty())
+            if (telefoneFuncionario.IsNullOrEmpty() || !telefoneValido(telefoneFuncionario))
             {
                 throw new ExceptionCustom("Telefone Invalido");
             }
@@ -76,7 +107,7 @@ public class FuncionarioController : Controller
             {
                 throw new ExceptionCustom("Email Invalido");
             }
-            if (CPFFuncionario.IsNullOrEmpty())
+            if (CPFFuncionario.IsNullOrEmpty() || !documentoValido(CPFFuncionario))
             {
                 throw new ExceptionCustom("CPF Invalido");
             }
@@ -227,7 +258,9 @@ public class FuncionarioController : Controller
             }
             if (!telefoneFuncionario.IsNullOrEmpty())
             {
-                entityUpdate.telefoneFuncionario = telefoneFuncionario;
+                if(telefoneValido(telefoneFuncionario)){
+                    entityUpdate.telefoneFuncionario = telefoneFuncionario;
+                }
             }
             if (!enderecoFuncionario.IsNullOrEmpty())
             {
@@ -239,7 +272,9 @@ public class FuncionarioController : Controller
             }
             if (!CPFFuncionario.IsNullOrEmpty())
             {
-                entityUpdate.CPFFuncionario = CPFFuncionario;
+                if(documentoValido(CPFFuncionario)){
+                    entityUpdate.CPFFuncionario = CPFFuncionario;
+                }
             }
             if (!tipoContrFuncionario.IsNullOrEmpty())
             {
