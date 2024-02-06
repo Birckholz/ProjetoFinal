@@ -227,20 +227,20 @@ public class FuncionarioController : Controller
             }
             //vamos checar se é responsável por departamento, se for , não vai poder mudar ,vai jogar excessao, pedindo pra mudar o responsavel do departamento
             Departamento? departamento = _context.departamentos.FirstOrDefault(f => f.idResponsavel == idFuncionario);
-            if(departamento==null){
+            if(departamento!=null){
                 throw new ExceptionCustom("Funcionario é responsável por um departamento, primeiro altere o responsável pelo departamento");
             }
 
             //vai remover as conexoes de projeto+funcionario
-            foreach (ProjetoFuncionario pj in _context.funcionariosProjeto)
+            /*foreach (ProjetoFuncionario pj in _context.funcionariosProjeto)
             {
                 if (pj.idFuncionario == idFuncionario)
                 {
                     _context.funcionariosProjeto.Remove(pj);
                 }
-            }
+            }*/
             //vai remover a conta bancária do funcionario
-            foreach (ContaBancaria c in _context.contasBancarias)
+            foreach (ContaBancaria c in _context.contasBancarias)//como não configuramos por cascade temos que excluir
             {
                 if (c.codFuncionario == idFuncionario)
                 {

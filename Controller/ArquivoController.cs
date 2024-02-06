@@ -32,6 +32,48 @@ namespace ProjetoFinal
             };
         }
 
+//funcao arquivo extra
+        private string arquivoBalancoMes(string texto)
+        {
+            texto = "____________________________________EMPRESA ____________________________________" +
+            "\nRelatório dos gastos e ganhos previstos para o mes:\n";
+            var _context = new ProjetoFinalContext();
+            float arrecadado=0;
+            float gasto=0;
+            float lucro=0;
+            DateTime dataAtual = DateTime.Today;
+            if (!_context.projetos.Any())
+            {
+                return "Não temos projetos cadastrados";
+            }
+            if (!_context.funcionarios.Any())
+            {
+                return "Não temos funcionarios cadastrados";
+            }
+            texto+="Projetos a serem finalizados nesse mês : ";
+            foreach (Projeto projeto in _context.projetos)
+            {
+                if(projeto.dataEntregaProjeto.Month==dataAtual.Month){
+                texto += "\n" + "Código do projeto: " + Convert.ToString(projeto.codProjeto) + "        "
+                + "Nome do projeto: " + projeto.nomeProjeto + "        " + "Cliente: " + projeto.idCliente + "\n" + "Status: " + projeto.statusProjeto + "        " + "Data de entrega: " + Convert.ToString(projeto.dataEntregaProjeto);
+                //e atualizamos o codAnterior, assim, se for de outro departamento ,fazemos um cabeçalho
+                    arrecadado+=projeto.valorProjeto;
+                }
+            }
+            var funcionariosPorCargo = _context.funcionarios.OrderBy(funcionario => funcionario.idCargo).ToList();
+            texto+="\nPagamentos a serem feitos nesse mês : ";
+            foreach (Funcionario funcionario in funcionariosPorCargo)
+            {
+                var cargo = _context.cargos.FirstOrDefault(y => y.codCargo == funcionario.idCargo);
+                texto += "\n" + "Código do funcionário: "+Convert.ToString(funcionario.codFuncionario) +"        "+"Nome do cargo: "+ cargo.nomeCargo + "        "+"Salário : "+Convert.ToString(cargo.salarioBase);
+                gasto+=cargo.salarioBase;
+            }
+            lucro=arrecadado-gasto;
+            texto+="\nValor arrecadado: "+Convert.ToString(arrecadado)+"\nValor a ser pago em salários: "+Convert.ToString(gasto)+"\nLucro: "+Convert.ToString(lucro);
+            return texto;
+
+        }
+
         private string arquivoProjDepart(string texto)
         {
             texto = "____________________________________EMPRESA ____________________________________" +
@@ -128,7 +170,7 @@ namespace ProjetoFinal
                     //Lógica para achar departamento e projetos
                     sw.Write(arquivoProjDepart(texto));
                 }
-                return Ok("O arquivo foi criado na pasta de downloads");
+                return Ok("O arquivo foi criado na pasta de Downloads");
             }
             catch (Exception e)
             {
@@ -161,7 +203,35 @@ namespace ProjetoFinal
                 {
                     sw.Write(arquivoProjFuncio(texto, funcionario));
                 }
-                return Ok("O arquivo foi criado na pasta de downloads");
+                return Ok("O arquivo foi criado na pasta de Downloads");
+            }
+            catch (Exception e)
+            {
+                ArquivoController.logErros(e.Message, "ArquivoController");
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("BalancoMes")]
+        public IActionResult getBalancoMes()
+        {
+            try
+            {
+                string texto = "";
+                // Caminho da pasta "Downloads" do usuário
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+                // Nome do arquivo que será criado na pasta Downloads
+                string arquivo = "Balanco_Mes.txt";
+                // garante que os caracteres de separação de diretório sejam tratados corretamente
+                string pathCompleto = Path.Combine(path, arquivo);
+
+                // Utiliza o StreamWriter para escrever no arquivo
+                using (StreamWriter sw = new StreamWriter(pathCompleto))
+                {
+                    //Lógica para achar departamento e projetos
+                    sw.Write(arquivoBalancoMes(texto));
+                }
+                return Ok("O arquivo foi criado na pasta de Downloads");
             }
             catch (Exception e)
             {

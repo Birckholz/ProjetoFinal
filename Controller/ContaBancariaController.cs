@@ -61,44 +61,6 @@ public class ContaBancariaController : Controller
 
     }
 
-    [HttpPut("Update/{codFuncionario}")]
-    public IActionResult updateContaBanc(int codFuncionario, string agenciaContaB, string numeroContaB, string tipoContaB)
-    {
-        var _context = new ProjetoFinalContext();
-        ContaBancaria? entityUpdate = _context.contasBancarias.FirstOrDefault(cb => cb.codFuncionario == codFuncionario);
-        try
-        {
-            if (entityUpdate == null)
-            {
-                throw new ExceptionCustom("Conta bancaria não encontrada");
-            }
-            if (agenciaContaB != null)
-            {
-                entityUpdate.agenciaContaB = agenciaContaB;
-            }
-            if (numeroContaB != null)
-            {
-                entityUpdate.numeroContaB = numeroContaB;
-            }
-            if (tipoContaB != null)
-            {
-                entityUpdate.tipoContaB = tipoContaB;
-            }
-            _context.SaveChanges();
-            return Ok("Funcionario removido do Projeto com sucesso.");
-        }
-        catch (ExceptionCustom e)
-        {
-            ArquivoController.logErros(e.Message, "ContaBancariaController");
-            return NotFound(e.Message);
-        }
-        catch (Exception t)
-        {
-            ArquivoController.logErros(t.Message, "ContaBancariaController");
-            return BadRequest(t.Message);
-        }
-
-    }
     [HttpGet("Get")]
     public IActionResult getContasBancarias()
     {
@@ -161,6 +123,7 @@ public class ContaBancariaController : Controller
                 throw new ExceptionCustom("Conta Bancaria não encontrada");
             }
             _context.contasBancarias.Remove(entityRemove);
+            _context.SaveChanges();
             return Ok("Conta Bancaria removido com sucesso.");
         }
         catch (ExceptionCustom e)
@@ -173,5 +136,44 @@ public class ContaBancariaController : Controller
             ArquivoController.logErros(t.Message, "ContaBancariaController");
             return NotFound(t.Message);
         }
+    }
+    
+    [HttpPut("Update/{codFuncionario}")]
+    public IActionResult updateContaBanc(int codFuncionario, string agenciaContaB, string numeroContaB, string tipoContaB)
+    {
+        var _context = new ProjetoFinalContext();
+        ContaBancaria? entityUpdate = _context.contasBancarias.FirstOrDefault(cb => cb.codFuncionario == codFuncionario);
+        try
+        {
+            if (entityUpdate == null)
+            {
+                throw new ExceptionCustom("Conta bancaria não encontrada");
+            }
+            if (agenciaContaB != null)
+            {
+                entityUpdate.agenciaContaB = agenciaContaB;
+            }
+            if (numeroContaB != null)
+            {
+                entityUpdate.numeroContaB = numeroContaB;
+            }
+            if (tipoContaB != null)
+            {
+                entityUpdate.tipoContaB = tipoContaB;
+            }
+            _context.SaveChanges();
+            return Ok("Funcionario removido do Projeto com sucesso.");
+        }
+        catch (ExceptionCustom e)
+        {
+            ArquivoController.logErros(e.Message, "ContaBancariaController");
+            return NotFound(e.Message);
+        }
+        catch (Exception t)
+        {
+            ArquivoController.logErros(t.Message, "ContaBancariaController");
+            return BadRequest(t.Message);
+        }
+
     }
 }

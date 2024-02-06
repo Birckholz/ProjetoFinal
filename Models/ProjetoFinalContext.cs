@@ -62,12 +62,12 @@ public class ProjetoFinalContext : DbContext
             .OnDelete(DeleteBehavior.NoAction)
             .HasConstraintName("FkIdResponsavel");
         //deu um erro de duplicar o idDepartamento , tirando fica normal
-        /*modelBuilder.Entity<Projeto>()
+        modelBuilder.Entity<Projeto>()
              .HasOne(p => p.fkCodDepartamento)
-             .WithMany()
+             .WithMany(d => d.projetosDepartamento)
              .HasForeignKey(d => d.codDepartamento)
              .OnDelete(DeleteBehavior.NoAction)
-             .HasConstraintName("FkcodDepartamento");*/
+             .HasConstraintName("FkcodDepartamento");
 
         base.OnModelCreating(modelBuilder);
     }

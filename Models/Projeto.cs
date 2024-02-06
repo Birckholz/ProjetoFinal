@@ -10,8 +10,8 @@ namespace ProjetoFinal
     {
         [Key]
         public int codProjeto { get; set; }
-        public int codDepartamento { get; set; }
         [ForeignKey("codDepartamento")]
+        public int codDepartamento { get; set; }
         public virtual Departamento? fkCodDepartamento { get; set; }
         public int idCliente { get; set; }
         [ForeignKey("idCliente")]

@@ -79,7 +79,7 @@ public class ProjetoFuncionarioController : Controller
 
     }
 
-    [HttpDelete("Update/{idProjeto}/{idFuncionario}")]
+    [HttpDelete("Delete/{idProjeto}/{idFuncionario}")]
     public IActionResult removerFuncProj(int idFuncionario, int idProjeto)
     {
         var _context = new ProjetoFinalContext();
@@ -97,6 +97,7 @@ public class ProjetoFuncionarioController : Controller
             if (entityRemove != null)
             {
                 _context.funcionariosProjeto.Remove(entityRemove);
+                _context.SaveChanges();
                 return Ok("Funcionario removido do Projeto com sucesso.");
             }
         }
