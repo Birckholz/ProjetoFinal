@@ -12,10 +12,9 @@ namespace ProjetoFinal
         public int codFuncionario { get; set; }
 
         public int idCargo { get; set; }
-        public virtual Cargo? fkCodCargo { get; set; }
+
 
         public int? idDepartamento { get; set; }
-        public virtual Departamento? fkCodDepartamento { get; set; }
 
         [MaxLength(100)]
         [Required]
@@ -41,7 +40,9 @@ namespace ProjetoFinal
         [Required]
         public string? statusFuncionario { get; set; }
 
+        public virtual Departamento? fkCodDepartamento { get; set; }
 
+        public virtual Cargo? fkCodCargo { get; set; }
         public virtual ICollection<ProjetoFuncionario> funcionariosProj { get; set; } = null!;
 
         public Funcionario()

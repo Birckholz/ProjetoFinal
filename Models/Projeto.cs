@@ -10,12 +10,13 @@ namespace ProjetoFinal
     {
         [Key]
         public int codProjeto { get; set; }
-        [ForeignKey("codDepartamento")]
         public int codDepartamento { get; set; }
-        public virtual Departamento? fkCodDepartamento { get; set; }
+        [ForeignKey("codDepartamento")]
+
+
         public int idCliente { get; set; }
         [ForeignKey("idCliente")]
-        public virtual Cliente? fkCliente { get; set; }
+
         [MaxLength(100)]
         [Required]
         public string? nomeProjeto { get; set; }
@@ -26,7 +27,8 @@ namespace ProjetoFinal
         public string? statusProjeto { get; set; }
         public float valorProjeto { get; set; }
         public DateOnly dataEntregaProjeto { get; set; }
-
+        public virtual Cliente? fkCliente { get; set; }
+        public virtual Departamento? fkCodDepartamento { get; set; }
         public virtual ICollection<ProjetoFuncionario> funcionariosProj { get; set; } = null!;
 
         public Projeto()
