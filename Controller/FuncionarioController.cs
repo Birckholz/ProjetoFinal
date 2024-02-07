@@ -337,7 +337,7 @@ public class FuncionarioController : Controller
                 if(findDepartamento(idDepart)!=null){
                     var departamento = _context.departamentos.FirstOrDefault(f => f.idResponsavel == entityUpdate.codFuncionario);//ver se ele não é responsavel por um departamento, pois se for, não podemos mudar
                     if(departamento==null || departamento.codDepartamento==idDepart){
-                        entityUpdate.idDepartamento=idDepart;//aqui ta dando problema, An error occurred while saving the entity changes. See the inner exception for details.
+                        entityUpdate.idDepartamento=idDepart;
 
                     }
                     else

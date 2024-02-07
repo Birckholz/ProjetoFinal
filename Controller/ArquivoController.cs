@@ -27,7 +27,7 @@ namespace ProjetoFinal
             }
             DateTime horarioDoErro = DateTime.Now;
             string entredaLog = $"[{horarioDoErro}]" + $"[{lugar}]" + errorMessage + "\n";
-            using (StreamWriter escritor = System.IO.File.AppendText(path))
+            using (StreamWriter escritor = System.IO.File.AppendText(path))//se ja existir apenas adicona texto, se não existe ele foi criado e agora vai receber o texto
             {
                 escritor.WriteLine(entredaLog);
             };
@@ -287,6 +287,7 @@ namespace ProjetoFinal
 
             return Ok();
         }
+        //pergunta, por que nao usa o [1]?
         private void sqlToTxtProjFunc(List<int> currentSetting, string fileName)
         {
             List<string> linhasTabela = new List<string>();
