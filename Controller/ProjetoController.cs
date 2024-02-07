@@ -71,7 +71,7 @@ public class ProjetoController : Controller
             }
             _context.projetos.Add(entityAdd);
             _context.SaveChanges();
-            return Ok("Dados Inseridos");
+            return new ObjectResult(entityAdd);
         }
         catch (ExceptionCustom e)
         {
@@ -211,7 +211,7 @@ public class ProjetoController : Controller
             }
 
             _context.SaveChanges();
-            return Ok("Dados Atulizados.");
+            return new ObjectResult(entityUpdate);
 
         }
         catch (ExceptionCustom t)

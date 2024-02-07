@@ -38,15 +38,16 @@ public class ContaBancariaController : Controller
             {
                 throw new ExceptionCustom("Tipo de Conta bancaria invalida");
             }
-            _context.contasBancarias.Add(new ContaBancaria()
-            {
+
+            ContaBancaria conta= new ContaBancaria(){
                 codFuncionario = codFuncionario,
                 agenciaContaB = agenciaContaB,
                 numeroContaB = numeroContaB,
-                tipoContaB = tipoContaB
-            });
+                tipoContaB = tipoContaB  
+            };
+            _context.contasBancarias.Add(conta);
             _context.SaveChanges();
-            return Ok("Dados Inseridos");
+            return new ObjectResult(conta);
         }
         catch (ExceptionCustom e)
         {
@@ -70,7 +71,7 @@ public class ContaBancariaController : Controller
             DbSet<ContaBancaria> retorno = _context.contasBancarias;
             if (!retorno.Any())
             {
-                throw new ExceptionCustom("Não a nenuma conta cadastrada");
+                throw new ExceptionCustom("Não há nenhuma conta cadastrada");
             }
             return Ok(retorno);
         }
@@ -124,7 +125,7 @@ public class ContaBancariaController : Controller
             }
             _context.contasBancarias.Remove(entityRemove);
             _context.SaveChanges();
-            return Ok("Conta Bancaria removido com sucesso.");
+            return Ok("Conta Bancaria removida com sucesso.");
         }
         catch (ExceptionCustom e)
         {
@@ -139,7 +140,7 @@ public class ContaBancariaController : Controller
     }
     
     [HttpPut("Update/{codFuncionario}")]
-    public IActionResult updateContaBanc(int codFuncionario, string agenciaContaB, string numeroContaB, string tipoContaB)
+    public IActionResult updateContaBanc(int codFuncionario, string? agenciaContaB, string? numeroContaB, string? tipoContaB)
     {
         var _context = new ProjetoFinalContext();
         ContaBancaria? entityUpdate = _context.contasBancarias.FirstOrDefault(cb => cb.codFuncionario == codFuncionario);
@@ -162,7 +163,7 @@ public class ContaBancariaController : Controller
                 entityUpdate.tipoContaB = tipoContaB;
             }
             _context.SaveChanges();
-            return Ok("Funcionario removido do Projeto com sucesso.");
+            return new ObjectResult(entityUpdate);
         }
         catch (ExceptionCustom e)
         {

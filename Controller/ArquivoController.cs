@@ -57,7 +57,6 @@ namespace ProjetoFinal
                 {
                     texto += "\n" + "Código do projeto: " + Convert.ToString(projeto.codProjeto) + "        "
                     + "Nome do projeto: " + projeto.nomeProjeto + "        " + "Cliente: " + projeto.idCliente + "\n" + "Status: " + projeto.statusProjeto + "        " + "Data de entrega: " + Convert.ToString(projeto.dataEntregaProjeto);
-                    //e atualizamos o codAnterior, assim, se for de outro departamento ,fazemos um cabeçalho
                     arrecadado += projeto.valorProjeto;
                 }
             }
@@ -191,7 +190,6 @@ namespace ProjetoFinal
                 // Utiliza o StreamWriter para escrever no arquivo
                 using (StreamWriter sw = new StreamWriter(pathCompleto))
                 {
-                    //Lógica para achar departamento e projetos
                     sw.Write(arquivoProjDepart(texto));
                 }
                 return Ok("O arquivo foi criado na pasta de Downloads");
@@ -236,7 +234,7 @@ namespace ProjetoFinal
             }
         }
 
-        [HttpGet("BalancoMes")]
+        [HttpGet("GetBalancoMes")]
         public IActionResult getBalancoMes()
         {
             try
@@ -252,7 +250,6 @@ namespace ProjetoFinal
                 // Utiliza o StreamWriter para escrever no arquivo
                 using (StreamWriter sw = new StreamWriter(pathCompleto))
                 {
-                    //Lógica para achar departamento e projetos
                     sw.Write(arquivoBalancoMes(texto));
                 }
                 return Ok("O arquivo foi criado na pasta de Downloads");

@@ -64,7 +64,7 @@ public class ProjetoFuncionarioController : Controller
             }
             _context.funcionariosProjeto.Add(entityAdd);
             _context.SaveChanges();
-            return Ok("Dados Inseridos");
+            return new ObjectResult(entityAdd);
         }
         catch (ExceptionCustom e)
         {

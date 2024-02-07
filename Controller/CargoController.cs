@@ -52,8 +52,12 @@ namespace ProjetoFinal
             try
             {
                 var _context = new ProjetoFinalContext();
-                DbSet<Cargo> retorno = _context.cargos;
-                return Ok(retorno);
+                DbSet<Cargo> cargos = _context.cargos;
+                if (!cargos.Any())
+                {
+                    throw new ExceptionCustom("Não há nenhum cargo cadastrado");
+                }
+                return Ok(cargos);
             }
             catch (Exception e)
             {

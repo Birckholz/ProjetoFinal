@@ -113,8 +113,12 @@ namespace ProjetoFinal
         {
             try{
                 var _context = new ProjetoFinalContext();
-                DbSet<Cliente> retorno = _context.clientes;
-                return Ok(retorno);
+                DbSet<Cliente> clientes = _context.clientes;
+                if (!clientes.Any())
+                {
+                    throw new ExceptionCustom("Não há nenhum cliente cadastrado");
+                }
+                return Ok(clientes);
             }
             catch (Exception e)
             {

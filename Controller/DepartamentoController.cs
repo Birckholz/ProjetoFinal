@@ -13,18 +13,30 @@ namespace ProjetoFinal
         private bool funcionarioValido(int idFuncionario)
         {
             var _context = new ProjetoFinalContext();
-            Funcionario? entityCheck = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
-            return entityCheck != null;
+            var funcionario = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
+            return funcionario != null;
         }
 
-        private bool funcionarioResponsavelDepartamento(int idFuncionario)//true quando tiver ja um departamento em nome do funcionario
+        private bool funcionarioResponsavelDepartamento(int idFuncionario)//true quando tiver ja um departamento no nome do funcionario
         {
             var _context = new ProjetoFinalContext();
-            Departamento? entityCheck = _context.departamentos.FirstOrDefault(f => f.idResponsavel == idFuncionario);
-            return entityCheck != null;
+            var departamento = _context.departamentos.FirstOrDefault(f => f.idResponsavel == idFuncionario);
+            return departamento != null;
         }
 
-        [HttpPost("Add{nome}/{responsavel}")]
+        private void updateFuncionarioResponsavel(int idDepartamento,int idResponsavel){//função necessária para atualizar o departamento de um funcionario caso ele seja responsável
+        //nao esta dando update
+            var _context=new ProjetoFinalContext();
+            var funcionarioControllernovo = new FuncionarioController();
+            var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == idResponsavel);
+            if (funcRespon != null)
+            {
+                //funcRespon.idDepartamento = departamento.codDepartamento;
+                funcionarioControllernovo.updateFunc(idResponsavel,null,idDepartamento,null,null,null,null,null,null,null,null,null);
+            }
+        }
+
+        [HttpPost("Add/{nome}/{responsavel}")]
         public IActionResult postDepartamento(string nome, int responsavel)
         {
             try
@@ -46,10 +58,14 @@ namespace ProjetoFinal
                 {
                     _context.departamentos.Add(departamento);
                     _context.SaveChanges();
+                    var departamentoCriado= _context.departamentos.FirstOrDefault(y => y.idResponsavel == responsavel);
+                    if(departamentoCriado==null){
+                        throw new ExceptionCustom("O departamento não foi criado corretamente");
+                    }
                     var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
                     if (funcRespon != null)
                     {
-                        funcRespon.idDepartamento = departamento.codDepartamento;//como precisamos ter adicionado um responsavel que ja foi checado e não pode ser nulo, funcRespon não será nulo.
+                        updateFuncionarioResponsavel(departamentoCriado.codDepartamento,funcRespon.codFuncionario);
                         return new ObjectResult(departamento);
                     }
                     throw new ExceptionCustom("Funcionario não encontrado");
@@ -73,8 +89,12 @@ namespace ProjetoFinal
             try
             {
                 var _context = new ProjetoFinalContext();
-                DbSet<Departamento> retorno = _context.departamentos;
-                return Ok(retorno);
+                DbSet<Departamento> departamentos = _context.departamentos;
+                if (!departamentos.Any())
+                {
+                    throw new ExceptionCustom("Não há nenhum departamento cadastrado");
+                }
+                return Ok(departamentos);
             }
             catch (Exception e)
             {
@@ -141,9 +161,7 @@ namespace ProjetoFinal
                                 _context.SaveChanges();
                                 cargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");//procura novamente
                             }
-
-                            if (cargoNulo != null)
-                            {
+                            if(cargoNulo!=null){
                                 funcNulo = new Funcionario()
                                 {
                                     idCargo = cargoNulo.codCargo,
@@ -160,18 +178,18 @@ namespace ProjetoFinal
 
                                 };
                                 _context.funcionarios.Add(funcNulo);
-                                _context.SaveChanges();
-                                funcNulo = _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
-                                if (funcNulo != null)
-                                {
-                                    postDepartamento("Departamento nao definido", funcNulo.codFuncionario);
-                                    DepartamentoNulo = _context.departamentos.FirstOrDefault(x => x.nomeDepartamento == "Departamento nao definido");
-                                }
-
                             }
-                        }
+                            _context.SaveChanges();
+                            }
+                            funcNulo = _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
+                            if (funcNulo != null)
+                            {
+                                postDepartamento("Departamento nao definido", funcNulo.codFuncionario);
+                                DepartamentoNulo = _context.departamentos.FirstOrDefault(x => x.nomeDepartamento == "Departamento nao definido");
+                            }
 
                     }
+
 
                     foreach (Projeto projeto in _context.projetos)
                     {
@@ -232,15 +250,9 @@ namespace ProjetoFinal
                 {
                     idResponsavel = Convert.ToInt32(responsavel);
                     if (funcionarioValido(idResponsavel) && !funcionarioResponsavelDepartamento(idResponsavel))
-                    {
-                        var funcionarioControllernovo = new FuncionarioController();
+                    {//ERRO AQUI, N ATUALIZA O DEPARTAMENTO DO FUNCIONARIO
                         departamento.idResponsavel = idResponsavel;
-                        var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
-                        if (funcRespon != null)
-                        {
-                            //funcRespon.idDepartamento = departamento.codDepartamento;
-                            funcionarioControllernovo.updateFunc(idResponsavel,null,departamento.codDepartamento,null,null,null,null,null,null,null,null,null);
-                        }
+                        updateFuncionarioResponsavel(idDepartamento,idResponsavel);
                     }
                     else
                     {

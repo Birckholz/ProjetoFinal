@@ -157,7 +157,7 @@ public class FuncionarioController : Controller
                 cargoFunc.funcionarioCargos.Add(funcAdicionado);
             }
             _context.SaveChanges();
-            return Ok("Dados Inseridos");
+            return new ObjectResult(funcAdicionado);
         }
         catch (ExceptionCustom e)
         {
@@ -230,16 +230,6 @@ public class FuncionarioController : Controller
             if(departamento!=null){
                 throw new ExceptionCustom("Funcionario é responsável por um departamento, primeiro altere o responsável pelo departamento");
             }
-
-            //vai remover as conexoes de projeto+funcionario
-            /*foreach (ProjetoFuncionario pj in _context.funcionariosProjeto)
-            {
-                if (pj.idFuncionario == idFuncionario)
-                {
-                    _context.funcionariosProjeto.Remove(pj);
-                }
-            }*/
-            //vai remover a conta bancária do funcionario
             foreach (ContaBancaria c in _context.contasBancarias)//como não configuramos por cascade temos que excluir
             {
                 if (c.codFuncionario == idFuncionario)
@@ -287,6 +277,10 @@ public class FuncionarioController : Controller
                     {
                         entityUpdate.telefoneFuncionario = telefoneFuncionario;
                     }
+                    else
+                    {
+                        throw new ExceptionCustom("Telefone não é válido");
+                    }
                 }
             }
             if (!enderecoFuncionario.IsNullOrEmpty())
@@ -304,6 +298,10 @@ public class FuncionarioController : Controller
                     if (documentoValido(CPFFuncionario))
                     {
                         entityUpdate.CPFFuncionario = CPFFuncionario;
+                    }
+                    else
+                    {
+                        throw new ExceptionCustom("Documento não é válido");
                     }
                 }
 
@@ -329,15 +327,31 @@ public class FuncionarioController : Controller
                 if(findCargo(idCarg)!=null){
                     entityUpdate.idCargo=idCarg;
                 }
+                else
+                {
+                    throw new ExceptionCustom("Cargo não é válido");
+                }
             }
             if(idDepartamento !=null){
                 int idDepart=Convert.ToInt32(idDepartamento);
                 if(findDepartamento(idDepart)!=null){
-                    entityUpdate.idCargo=idDepart;
+                    var departamento = _context.departamentos.FirstOrDefault(f => f.idResponsavel == entityUpdate.codFuncionario);//ver se ele não é responsavel por um departamento, pois se for, não podemos mudar
+                    if(departamento==null || departamento.codDepartamento==idDepart){
+                        entityUpdate.idDepartamento=idDepart;//aqui ta dando problema, An error occurred while saving the entity changes. See the inner exception for details.
+
+                    }
+                    else
+                    {
+                        throw new ExceptionCustom("O funcionário é responsável por um departamento, modifique o responsável e depois mude o funcionário de departamento");
+                    }
+                }
+                else
+                {
+                    throw new ExceptionCustom("Departamento não é válido");
                 }
             }
             _context.SaveChanges();
-            return Ok("Dados Atulizados.");
+            return new ObjectResult(entityUpdate);
         }
         catch (ExceptionCustom t)
         {
