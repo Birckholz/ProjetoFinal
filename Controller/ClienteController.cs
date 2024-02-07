@@ -163,7 +163,7 @@ namespace ProjetoFinal
                 {
                     var ClienteNulo = _context.clientes.FirstOrDefault(x => x.nomeCliente == "Cliente excluido");//se quiser tirar um cliente,não quero excluir dados de um projeto que a empresa criou, pois esses dados fazem parte do portfolio dela
                     if(ClienteNulo ==null){
-                        postCliente("Cliente excluido","000", "000", "000", null,null,null,null);
+                        postCliente("Cliente excluido","000", "000", "000", "000","000","000","000");
                         ClienteNulo = _context.clientes.FirstOrDefault(x => x.nomeCliente == "Cliente excluido");
                     }
                     var item = _context.clientes.FirstOrDefault(y => y.codCliente == idCliente);
