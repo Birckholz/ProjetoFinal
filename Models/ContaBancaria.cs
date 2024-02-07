@@ -10,11 +10,11 @@ namespace ProjetoFinal
     {
         [Key]
         public int codContaB { get; set; }
-
+        public int codFuncionario { get; set; }
         [ForeignKey("codFuncionario")]
 
-        public virtual Funcionario? fkCodFuncionario { get; set; }
-        public int codFuncionario { get; set; }
+
+
 
         [MaxLength(50)]
         [Required]
@@ -25,5 +25,6 @@ namespace ProjetoFinal
         [MaxLength(60)]
         [Required]
         public string? tipoContaB { get; set; }
+        public virtual Funcionario? fkCodFuncionario { get; set; }
     }
 }

@@ -13,7 +13,6 @@ namespace ProjetoFinal
 
         public int idCargo { get; set; }
 
-
         public int? idDepartamento { get; set; }
 
         [MaxLength(100)]
@@ -27,7 +26,7 @@ namespace ProjetoFinal
         public string? emailFuncionario { get; set; }
         [MaxLength(100)]
         public string? enderecoFuncionario { get; set; }
-        [MaxLength(30)]
+        [MaxLength(14)]
         [Required]
         public string? CPFFuncionario { get; set; }
         [MaxLength(50)]

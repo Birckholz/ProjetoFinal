@@ -273,16 +273,16 @@ namespace ProjetoFinal
         {
             List<List<int>> settingEntitySpacing = new List<List<int>> { new List<int> { 02, 100, 50, 50, 100, 100, 14, 18 ,20 },                  // Cliente CPF
                                                                          new List<int> { 02, 100, 50, 50, 100, 100, 14, 18 ,20 },                  // Cliente CNPJ
-                                                                         new List<int> { 02, 50, 05 },                                             // Cargo
+                                                                         new List<int> { 02, 50, 10 },                                             // Cargo
                                                                          new List<int> { 02, 02, 50, 60, 60 },                                         // Conta
                                                                          new List<int> { 02, 50, 02 },                                             // Departamento
-                                                                         new List<int> { 02, 02, 02, 100, 50, 50, 100, 30, 50, 100, 100, 20 },     // Funcionario
+                                                                         new List<int> { 02, 02, 02, 100, 50, 50, 100, 14, 50, 100, 100, 20 },     // Funcionario
                                                                          new List<int> { 02, 02, 02, 100, 200, 50, 10, 10},                        // Projeto
                                                                          new List<int> { 02, 02}                                                   // ProjetoFunc
                                                                         };
             sqlToTxt<Cliente>(new ProjetoFinalContext(), settingEntitySpacing[0], "Cliente.txt", 9);
             sqlToTxt<Cargo>(new ProjetoFinalContext(), settingEntitySpacing[2], "Cargo.txt", 3);
-            sqlToTxt<ContaBancaria>(new ProjetoFinalContext(), settingEntitySpacing[3], "Conta.txt", 5);
+            sqlToTxt<ContaBancaria>(new ProjetoFinalContext(), settingEntitySpacing[3], "Conta.txt", 4);
             sqlToTxt<Departamento>(new ProjetoFinalContext(), settingEntitySpacing[4], "Departamento.txt", 3);
             sqlToTxt<Projeto>(new ProjetoFinalContext(), settingEntitySpacing[6], "Projeto.txt", 8);
             sqlToTxt<Funcionario>(new ProjetoFinalContext(), settingEntitySpacing[5], "Funcionario.txt", 12);
@@ -340,7 +340,7 @@ namespace ProjetoFinal
                 var lastEntity = _context.AsEnumerable().OrderByDescending(c => c.GetType().GetProperties().ElementAt(0).GetValue(c)).First();
                 lastInt = Convert.ToInt32(lastEntity.GetType().GetProperties()[0].GetValue(lastEntity));
             }
-            while (currentEntityIndex != lastInt)
+            while (currentEntityIndex != lastInt + 1)
             {
                 var entity = _context.Find(currentEntityIndex);
                 if (entity != null && currentSetting != null)
@@ -375,7 +375,14 @@ namespace ProjetoFinal
                         }
                         else
                         {
-                            test += "null" + new string(' ', currentSetting[i]);
+                            if (currentSetting[i] < 4)
+                            {
+                                test += "00";
+                            }
+                            else
+                            {
+                                test += "null" + new string(' ', currentSetting[i] - 4);
+                            }
                         }
 
                     }
