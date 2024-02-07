@@ -233,11 +233,13 @@ namespace ProjetoFinal
                     idResponsavel = Convert.ToInt32(responsavel);
                     if (funcionarioValido(idResponsavel) && !funcionarioResponsavelDepartamento(idResponsavel))
                     {
+                        var funcionarioControllernovo = new FuncionarioController();
                         departamento.idResponsavel = idResponsavel;
                         var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
                         if (funcRespon != null)
                         {
-                            funcRespon.idDepartamento = departamento.codDepartamento;
+                            //funcRespon.idDepartamento = departamento.codDepartamento;
+                            funcionarioControllernovo.updateFunc(idResponsavel,null,departamento.codDepartamento,null,null,null,null,null,null,null,null,null);
                         }
                     }
                     else

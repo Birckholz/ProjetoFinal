@@ -264,7 +264,7 @@ public class FuncionarioController : Controller
     }
 
     [HttpPut("Update/{idFuncionario}/")]
-    public IActionResult updateFunc(int idFuncionario, string? nomeFuncionario, string? telefoneFuncionario, string? enderecoFuncionario, string? emailFuncionario, string? CPFFuncionario, string? tipoContrFuncionario, string? modoTrabFuncionario, string? formacaoRelevanteFuncionario, string? statusFuncionario)
+    public IActionResult updateFunc(int idFuncionario, int? idCargo,int? idDepartamento,string? nomeFuncionario, string? telefoneFuncionario, string? enderecoFuncionario, string? emailFuncionario, string? CPFFuncionario, string? tipoContrFuncionario, string? modoTrabFuncionario, string? formacaoRelevanteFuncionario, string? statusFuncionario)
     {
         var _context = new ProjetoFinalContext();
         Funcionario? entityUpdate = _context.funcionarios.FirstOrDefault(f => f.codFuncionario == idFuncionario);
@@ -323,6 +323,18 @@ public class FuncionarioController : Controller
             if (!statusFuncionario.IsNullOrEmpty())
             {
                 entityUpdate.statusFuncionario = statusFuncionario;
+            }
+            if(idCargo !=null){
+                int idCarg=Convert.ToInt32(idCargo);
+                if(findCargo(idCarg)!=null){
+                    entityUpdate.idCargo=idCarg;
+                }
+            }
+            if(idDepartamento !=null){
+                int idDepart=Convert.ToInt32(idDepartamento);
+                if(findDepartamento(idDepart)!=null){
+                    entityUpdate.idCargo=idDepart;
+                }
             }
             _context.SaveChanges();
             return Ok("Dados Atulizados.");
