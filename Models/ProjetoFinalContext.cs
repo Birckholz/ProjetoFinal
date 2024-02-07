@@ -16,8 +16,8 @@ public class ProjetoFinalContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         //Não esquecer de mudar Server= ao clonar
-        //optionsBuilder.UseSqlServer(@"Server=COMPUTADORDEGUI\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
-         optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        optionsBuilder.UseSqlServer(@"Server=COMPUTADORDEGUI\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
+        //  optionsBuilder.UseSqlServer(@"Server=BSRO\SQLEXPRESS;Database=ProjetoFinal;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;");
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -58,7 +58,7 @@ public class ProjetoFinalContext : DbContext
             .WithMany()
             .HasForeignKey(d => d.idResponsavel)
             //recomendação do erro: A introdução da restrição FOREIGN KEY 'FkIdResponsavel' na tabela 'departamentos' pode causar ciclos ou vários caminhos em cascata. Especifique ON DELETE NO ACTION ou ON UPDATE NO ACTION, ou modifique outras restrições FOREIGN KEY.
-//Não foi possível criar a restrição ou o índice. Consulte os erros anteriores.
+            //Não foi possível criar a restrição ou o índice. Consulte os erros anteriores.
             .OnDelete(DeleteBehavior.NoAction)
             .HasConstraintName("FkIdResponsavel");
         //deu um erro de duplicar o idDepartamento , tirando fica normal

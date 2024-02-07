@@ -49,7 +49,8 @@ namespace ProjetoFinal
         [HttpGet("Get")]
         public IActionResult getCargos()
         {
-            try{
+            try
+            {
                 var _context = new ProjetoFinalContext();
                 DbSet<Cargo> retorno = _context.cargos;
                 return Ok(retorno);
@@ -71,7 +72,7 @@ namespace ProjetoFinal
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
                     if (item == null)
                     {
-                       throw new ExceptionCustom("Não foi possivel encontrar o cargo.");
+                        throw new ExceptionCustom("Não foi possivel encontrar o cargo.");
                     }
                     return new ObjectResult(item);
                 }
@@ -98,8 +99,9 @@ namespace ProjetoFinal
                 {
                     var cargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");//se quiser tirar um cargo, não quero excluir funcionarios com esse cargo, então caso um cargo deixe de existir,
                     //quero que os funcionarios fiquem com um cargo nulo, depois pode-se modificar para colocar o novo cargo ao qual vão pertencer
-                    if(cargoNulo ==null){//se não existe ou foi excluido
-                        postCargo("Cargo nao definido",0);
+                    if (cargoNulo == null)
+                    {//se não existe ou foi excluido
+                        postCargo("Cargo nao definido", 0);
                         cargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");//procura novamente
                     }
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
@@ -109,9 +111,12 @@ namespace ProjetoFinal
                     }
                     foreach (Funcionario funcionario in _context.funcionarios)
                     {
-                        if (funcionario.idCargo == idCargo)
+                        if (cargoNulo != null)
                         {
-                            funcionario.idCargo = cargoNulo.codCargo;
+                            if (funcionario.idCargo == idCargo)
+                            {
+                                funcionario.idCargo = cargoNulo.codCargo;
+                            }
                         }
                     }
                     _context.cargos.Remove(item);

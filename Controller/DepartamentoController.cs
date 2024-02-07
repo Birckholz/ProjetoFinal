@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ProjetoFinal
 {
@@ -45,8 +46,12 @@ namespace ProjetoFinal
                     _context.departamentos.Add(departamento);
                     _context.SaveChanges();
                     var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
-                    funcRespon.idDepartamento=departamento.codDepartamento;//como precisamos ter adicionado um responsavel que ja foi checado e não pode ser nulo, funcRespon não será nulo.
-                    return new ObjectResult(departamento);
+                    if (funcRespon != null)
+                    {
+                        funcRespon.idDepartamento = departamento.codDepartamento;//como precisamos ter adicionado um responsavel que ja foi checado e não pode ser nulo, funcRespon não será nulo.
+                        return new ObjectResult(departamento);
+                    }
+                    throw new ExceptionCustom("Funcionario não encontrado");
                 }
             }
             catch (ExceptionCustom e)
@@ -118,11 +123,14 @@ namespace ProjetoFinal
                         throw new ExceptionCustom("Não foi possivel encontrar o departamento.");
                     }
                     //se formos excluir
-                    if(DepartamentoNulo ==null){
-                        Funcionario? funcNulo= _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
-                        if (funcNulo == null){//se não existe, cria o nulo
+                    if (DepartamentoNulo == null)
+                    {
+                        Funcionario? funcNulo = _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
+                        if (funcNulo == null)
+                        {//se não existe, cria o nulo
                             var cargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");
-                            if(cargoNulo ==null){//se não existe ou foi excluido
+                            if (cargoNulo == null)
+                            {//se não existe ou foi excluido
                                 Cargo cargo = new Cargo()
                                 {
                                     nomeCargo = "Cargo nao definido",
@@ -132,39 +140,49 @@ namespace ProjetoFinal
                                 _context.SaveChanges();
                                 cargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");//procura novamente
                             }
-                            funcNulo = new Funcionario()
+
+                            if (cargoNulo != null)
                             {
-                                idCargo = cargoNulo.codCargo,
-                                idDepartamento = null,
-                                CPFFuncionario = "000",
-                                emailFuncionario = "000",
-                                enderecoFuncionario = "000",
-                                formacaoRelevanteFuncionario = null,
-                                nomeFuncionario = "Funcionario Nulo",
-                                statusFuncionario = "000",
-                                modoTrabFuncionario = null,
-                                telefoneFuncionario = "000",
-                                tipoContrFuncionario = null
-                            };
-                            _context.funcionarios.Add(funcNulo);
-                            _context.SaveChanges();
-                            funcNulo= _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
+                                funcNulo = new Funcionario()
+                                {
+                                    idCargo = cargoNulo.codCargo,
+                                    idDepartamento = null,
+                                    CPFFuncionario = "000",
+                                    emailFuncionario = "000",
+                                    enderecoFuncionario = "000",
+                                    formacaoRelevanteFuncionario = null,
+                                    nomeFuncionario = "Funcionario Nulo",
+                                    statusFuncionario = "000",
+                                    modoTrabFuncionario = null,
+                                    telefoneFuncionario = "000",
+                                    tipoContrFuncionario = null
+
+                                };
+                                _context.funcionarios.Add(funcNulo);
+                                _context.SaveChanges();
+                                funcNulo = _context.funcionarios.FirstOrDefault(x => x.nomeFuncionario == "Funcionario Nulo");
+                                if (funcNulo != null)
+                                {
+                                    postDepartamento("Departamento nao definido", funcNulo.codFuncionario);
+                                    DepartamentoNulo = _context.departamentos.FirstOrDefault(x => x.nomeDepartamento == "Departamento nao definido");
+                                }
+
+                            }
                         }
-                        postDepartamento("Departamento nao definido",funcNulo.codFuncionario);
-                        DepartamentoNulo = _context.departamentos.FirstOrDefault(x => x.nomeDepartamento == "Departamento nao definido");
+
                     }
 
                     foreach (Projeto projeto in _context.projetos)
                     {
-                        if (projeto.codDepartamento == idDepartamento)
+                        if (projeto.codDepartamento == idDepartamento && DepartamentoNulo != null)
                         {
                             projeto.codDepartamento = DepartamentoNulo.codDepartamento;
-                            projeto.descricaoProjeto+=" Departamento: "+ item.nomeDepartamento;//isso fará com que descrição do projeto tenha o nome do departamento que o fez
+                            projeto.descricaoProjeto += " Departamento: " + item.nomeDepartamento;//isso fará com que descrição do projeto tenha o nome do departamento que o fez
                         }
                     }
                     foreach (Funcionario funcionario in _context.funcionarios)
                     {
-                        if (funcionario.idDepartamento == idDepartamento)
+                        if (funcionario.idDepartamento == idDepartamento && DepartamentoNulo != null)
                         {
                             funcionario.idDepartamento = DepartamentoNulo.codDepartamento;
                         }
@@ -215,8 +233,11 @@ namespace ProjetoFinal
                     if (funcionarioValido(idResponsavel) && !funcionarioResponsavelDepartamento(idResponsavel))
                     {
                         departamento.idResponsavel = idResponsavel;
-                        var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == idResponsavel);
-                        funcRespon.idDepartamento=departamento.codDepartamento;
+                        var funcRespon = _context.funcionarios.FirstOrDefault(y => y.codFuncionario == responsavel);
+                        if (funcRespon != null)
+                        {
+                            funcRespon.idDepartamento = departamento.codDepartamento;
+                        }
                     }
                     else
                     {

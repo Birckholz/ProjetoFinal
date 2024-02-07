@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -32,15 +33,14 @@ namespace ProjetoFinal
             };
         }
 
-//funcao arquivo extra
         private string arquivoBalancoMes(string texto)
         {
             texto = "____________________________________EMPRESA ____________________________________" +
             "\nRelatório dos gastos e ganhos previstos para o mes:\n";
             var _context = new ProjetoFinalContext();
-            float arrecadado=0;
-            float gasto=0;
-            float lucro=0;
+            float arrecadado = 0;
+            float gasto = 0;
+            float lucro = 0;
             DateTime dataAtual = DateTime.Today;
             if (!_context.projetos.Any())
             {
@@ -50,29 +50,53 @@ namespace ProjetoFinal
             {
                 return "Não temos funcionarios cadastrados";
             }
-            texto+="Projetos a serem finalizados nesse mês : ";
+            texto += "Projetos a serem finalizados nesse mês : ";
             foreach (Projeto projeto in _context.projetos)
             {
-                if(projeto.dataEntregaProjeto.Month==dataAtual.Month){
-                texto += "\n" + "Código do projeto: " + Convert.ToString(projeto.codProjeto) + "        "
-                + "Nome do projeto: " + projeto.nomeProjeto + "        " + "Cliente: " + projeto.idCliente + "\n" + "Status: " + projeto.statusProjeto + "        " + "Data de entrega: " + Convert.ToString(projeto.dataEntregaProjeto);
-                //e atualizamos o codAnterior, assim, se for de outro departamento ,fazemos um cabeçalho
-                    arrecadado+=projeto.valorProjeto;
+                if (projeto.dataEntregaProjeto.Month == dataAtual.Month)
+                {
+                    texto += "\n" + "Código do projeto: " + Convert.ToString(projeto.codProjeto) + "        "
+                    + "Nome do projeto: " + projeto.nomeProjeto + "        " + "Cliente: " + projeto.idCliente + "\n" + "Status: " + projeto.statusProjeto + "        " + "Data de entrega: " + Convert.ToString(projeto.dataEntregaProjeto);
+                    //e atualizamos o codAnterior, assim, se for de outro departamento ,fazemos um cabeçalho
+                    arrecadado += projeto.valorProjeto;
                 }
             }
             var funcionariosPorCargo = _context.funcionarios.OrderBy(funcionario => funcionario.idCargo).ToList();
-            texto+="\nPagamentos a serem feitos nesse mês : ";
+            texto += "\nPagamentos a serem feitos nesse mês : ";
             foreach (Funcionario funcionario in funcionariosPorCargo)
             {
                 var cargo = _context.cargos.FirstOrDefault(y => y.codCargo == funcionario.idCargo);
-                texto += "\n" + "Código do funcionário: "+Convert.ToString(funcionario.codFuncionario) +"        "+"Nome do cargo: "+ cargo.nomeCargo + "        "+"Salário : "+Convert.ToString(cargo.salarioBase);
-                gasto+=cargo.salarioBase;
+                if (cargo != null)
+                {
+                    texto += "\n" + "Código do funcionário: " + Convert.ToString(funcionario.codFuncionario) + "        " + "Nome do cargo: " + cargo.nomeCargo + "        " + "Salário : " + Convert.ToString(cargo.salarioBase);
+                    gasto += cargo.salarioBase;
+                }
             }
-            lucro=arrecadado-gasto;
-            texto+="\nValor arrecadado: "+Convert.ToString(arrecadado)+"\nValor a ser pago em salários: "+Convert.ToString(gasto)+"\nLucro: "+Convert.ToString(lucro);
+            lucro = arrecadado - gasto;
+            texto += "\nValor arrecadado: " + Convert.ToString(arrecadado) + "\nValor a ser pago em salários: " + Convert.ToString(gasto) + "\nLucro: " + Convert.ToString(lucro);
             return texto;
 
         }
+
+        public static void escreTxtSeq(string fileName, List<string> linhas)
+        {
+            string pasta = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
+            string txtName = fileName;
+            string path = Path.Combine(pasta, txtName);
+            if (!System.IO.File.Exists(path))
+            {
+                using (FileStream fs = System.IO.File.Create(path)) { };
+            }
+            System.IO.File.WriteAllText(path, string.Empty);
+            foreach (string line in linhas)
+            {
+                using (StreamWriter escritor = System.IO.File.AppendText(path))
+                {
+                    escritor.WriteLine(line);
+                };
+            }
+        }
+
 
         private string arquivoProjDepart(string texto)
         {
@@ -243,18 +267,89 @@ namespace ProjetoFinal
         [HttpGet("ToText/dasda")]
         public IActionResult getTxt()
         {
-            return Ok(sqlToTxt<Cliente>(new ProjetoFinalContext()));
+            List<List<int>> settingEntitySpacing = new List<List<int>> { new List<int> { 02, 100, 50, 50, 100, 100, 11, 14 ,20 },                  // Cliente CPF
+                                                                         new List<int> { 02, 100, 50, 50, 100, 100, 11, 14 ,20 },                  // Cliente CNPJ
+                                                                         new List<int> { 02, 50, 05 },                                             // Cargo
+                                                                         new List<int> { 02, 50, 60, 60 },                                         // Conta
+                                                                         new List<int> { 02, 50, 02 },                                             // Departamento
+                                                                         new List<int> { 02, 02, 02, 100, 50, 50, 100, 30, 50, 100, 100, 20 },     // Funcionario
+                                                                         new List<int> { 02, 02, 02, 100, 200, 50, 05, 10},                        // Projeto
+                                                                         new List<int> { 02, 02}                                                   // ProjetoFunc
+                                                                        };
+            sqlToTxt<Cliente>(new ProjetoFinalContext(), settingEntitySpacing[0], "Cliente.txt");
+            sqlToTxt<Cargo>(new ProjetoFinalContext(), settingEntitySpacing[2], "Cargo.txt");
+            sqlToTxt<ContaBancaria>(new ProjetoFinalContext(), settingEntitySpacing[3], "Conta.txt");
+            sqlToTxt<Departamento>(new ProjetoFinalContext(), settingEntitySpacing[4], "Departamento.txt");
+            sqlToTxt<Projeto>(new ProjetoFinalContext(), settingEntitySpacing[6], "Projeto.txt");
+            sqlToTxt<Funcionario>(new ProjetoFinalContext(), settingEntitySpacing[5], "Funcionario.txt");
+            sqlToTxtProjFunc(settingEntitySpacing[7], "ProjFunc.txt");
+
+            return Ok();
+        }
+        private void sqlToTxtProjFunc(List<int> currentSetting, string fileName)
+        {
+            List<string> linhasTabela = new List<string>();
+            string test = "";
+            var _context = new ProjetoFinalContext();
+            DbSet<ProjetoFuncionario> projetoFuncionarios = _context.funcionariosProjeto;
+            var ordenado = projetoFuncionarios.OrderBy(c => c.idProjeto);
+            var ordenadoDecre = projetoFuncionarios.OrderByDescending(c => c.idProjeto);
+
+            int lastProjetoId = ordenadoDecre.FirstOrDefault()?.idProjeto ?? 0;
+            int lastFuncionarioId = ordenadoDecre.FirstOrDefault()?.idFuncionario ?? 0;
+            int currentEntityIndex = 1;
+            var crr_entity = ordenado.First();
+            if (crr_entity != null)
+            {
+                int idProj = crr_entity.idProjeto;
+                int idFunc = crr_entity.idFuncionario;
+                while (idProj != lastProjetoId && idFunc != lastFuncionarioId)
+                {
+                    if (idProj < 10)
+                    {
+                        test += '0';
+                    }
+                    test += idProj;
+                    if (idFunc < 10)
+                    {
+                        test += '0';
+                    }
+                    test += idFunc;
+                    linhasTabela.Add(test);
+                    crr_entity = ordenado.FirstOrDefault(pj => pj.idProjeto == currentEntityIndex);
+                    currentEntityIndex++;
+                }
+            }
+            linhasTabela.Add(lastProjetoId.ToString() + lastFuncionarioId.ToString());
+            escreTxtSeq(fileName, linhasTabela);
         }
 
-        private string sqlToTxt<T>(DbContext context) where T : class
+        private string sqlToTxt<T>(DbContext context, List<int> currentSetting, string fileName) where T : class
         {
+            List<string> listaLinhas = new List<string>();
+            int lastInt = 1;
             string test = "";
             int currentEntityIndex = 1;
             var _context = context.Set<T>();
-            while (currentEntityIndex != _context.Count() + 1)
+            var primeira = _context.FirstOrDefault();
+            if (primeira != null)
+            {
+                currentEntityIndex = Convert.ToInt32(primeira.GetType().GetProperties()[0].GetValue(primeira));
+            }
+            if (currentEntityIndex == 0)
+            {
+                return "";
+            }
+            int ogNumEnt = currentEntityIndex;
+            if (_context.Count() != 0)
+            {
+                var lastEntity = _context.AsEnumerable().OrderByDescending(c => c.GetType().GetProperties().ElementAt(0).GetValue(c)).First();
+                lastInt = Convert.ToInt32(lastEntity.GetType().GetProperties()[0].GetValue(lastEntity));
+            }
+            while (currentEntityIndex != lastInt)
             {
                 var entity = _context.Find(currentEntityIndex);
-                if (entity != null)
+                if (entity != null && currentSetting != null)
                 {
                     var props = entity.GetType().GetProperties();
                     for (int i = 0; i < props.Length - 1; i++)
@@ -263,13 +358,39 @@ namespace ProjetoFinal
                         var value = attributeEntity.GetValue(entity);
                         if (value != null)
                         {
-                            test += value.ToString();
+                            string valueString = value.ToString() ?? "";
+                            if (valueString != null)
+                            {
+                                int tamValue = valueString.Length;
+                                int usoComparar = 0;
+                                if (valueString.Length == 14 && i == 7)
+                                {
+                                    usoComparar = 14;
+                                }
+                                else
+                                {
+                                    usoComparar = currentSetting[i];
+                                }
+                                if (tamValue != usoComparar)
+                                {
+                                    int numEspacos = usoComparar - tamValue;
+                                    valueString += new string(' ', numEspacos);
+                                }
+                                test += valueString;
+                            }
+                        }
+                        else
+                        {
+                            test += "null" + new string(' ', currentSetting[i]);
                         }
 
                     }
+                    listaLinhas.Add(test);
+                    escreTxtSeq(fileName, listaLinhas);
+                    test = "";
                 }
-                test += '\n';
                 currentEntityIndex++;
+
             }
             return test;
         }
