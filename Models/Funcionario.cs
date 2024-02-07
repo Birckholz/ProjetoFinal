@@ -12,10 +12,8 @@ namespace ProjetoFinal
         public int codFuncionario { get; set; }
 
         public int idCargo { get; set; }
-        public virtual Cargo? fkCodCargo { get; set; }
 
         public int? idDepartamento { get; set; }
-        public virtual Departamento? fkCodDepartamento { get; set; }
 
         [MaxLength(100)]
         [Required]
@@ -28,7 +26,7 @@ namespace ProjetoFinal
         public string? emailFuncionario { get; set; }
         [MaxLength(100)]
         public string? enderecoFuncionario { get; set; }
-        [MaxLength(30)]
+        [MaxLength(14)]
         [Required]
         public string? CPFFuncionario { get; set; }
         [MaxLength(50)]
@@ -41,7 +39,9 @@ namespace ProjetoFinal
         [Required]
         public string? statusFuncionario { get; set; }
 
+        public virtual Departamento? fkCodDepartamento { get; set; }
 
+        public virtual Cargo? fkCodCargo { get; set; }
         public virtual ICollection<ProjetoFuncionario> funcionariosProj { get; set; } = null!;
 
         public Funcionario()

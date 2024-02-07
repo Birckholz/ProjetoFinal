@@ -86,6 +86,7 @@ namespace ProjetoFinal
             {
                 using (FileStream fs = System.IO.File.Create(path)) { };
             }
+
             System.IO.File.WriteAllText(path, string.Empty);
             foreach (string line in linhas)
             {
@@ -94,6 +95,9 @@ namespace ProjetoFinal
                     escritor.WriteLine(line);
                 };
             }
+
+
+
         }
 
 
@@ -261,24 +265,24 @@ namespace ProjetoFinal
             }
         }
 
-        [HttpGet("ToText/dasda")]
+        [HttpGet("ToText/")]
         public IActionResult getTxt()
         {
-            List<List<int>> settingEntitySpacing = new List<List<int>> { new List<int> { 02, 100, 50, 50, 100, 100, 11, 14 ,20 },                  // Cliente CPF
-                                                                         new List<int> { 02, 100, 50, 50, 100, 100, 11, 14 ,20 },                  // Cliente CNPJ
-                                                                         new List<int> { 02, 50, 05 },                                             // Cargo
-                                                                         new List<int> { 02, 50, 60, 60 },                                         // Conta
+            List<List<int>> settingEntitySpacing = new List<List<int>> { new List<int> { 02, 100, 50, 50, 100, 100, 14, 18 ,20 },                  // Cliente CPF
+                                                                         new List<int> { 02, 100, 50, 50, 100, 100, 14, 18 ,20 },                  // Cliente CNPJ
+                                                                         new List<int> { 02, 50, 10 },                                             // Cargo
+                                                                         new List<int> { 02, 02, 50, 60, 60 },                                         // Conta
                                                                          new List<int> { 02, 50, 02 },                                             // Departamento
-                                                                         new List<int> { 02, 02, 02, 100, 50, 50, 100, 30, 50, 100, 100, 20 },     // Funcionario
-                                                                         new List<int> { 02, 02, 02, 100, 200, 50, 05, 10},                        // Projeto
+                                                                         new List<int> { 02, 02, 02, 100, 50, 50, 100, 14, 50, 100, 100, 20 },     // Funcionario
+                                                                         new List<int> { 02, 02, 02, 100, 200, 50, 10, 10},                        // Projeto
                                                                          new List<int> { 02, 02}                                                   // ProjetoFunc
                                                                         };
-            sqlToTxt<Cliente>(new ProjetoFinalContext(), settingEntitySpacing[0], "Cliente.txt");
-            sqlToTxt<Cargo>(new ProjetoFinalContext(), settingEntitySpacing[2], "Cargo.txt");
-            sqlToTxt<ContaBancaria>(new ProjetoFinalContext(), settingEntitySpacing[3], "Conta.txt");
-            sqlToTxt<Departamento>(new ProjetoFinalContext(), settingEntitySpacing[4], "Departamento.txt");
-            sqlToTxt<Projeto>(new ProjetoFinalContext(), settingEntitySpacing[6], "Projeto.txt");
-            sqlToTxt<Funcionario>(new ProjetoFinalContext(), settingEntitySpacing[5], "Funcionario.txt");
+            sqlToTxt<Cliente>(new ProjetoFinalContext(), settingEntitySpacing[0], "Cliente.txt", 9);
+            sqlToTxt<Cargo>(new ProjetoFinalContext(), settingEntitySpacing[2], "Cargo.txt", 3);
+            sqlToTxt<ContaBancaria>(new ProjetoFinalContext(), settingEntitySpacing[3], "Conta.txt", 4);
+            sqlToTxt<Departamento>(new ProjetoFinalContext(), settingEntitySpacing[4], "Departamento.txt", 3);
+            sqlToTxt<Projeto>(new ProjetoFinalContext(), settingEntitySpacing[6], "Projeto.txt", 8);
+            sqlToTxt<Funcionario>(new ProjetoFinalContext(), settingEntitySpacing[5], "Funcionario.txt", 12);
             sqlToTxtProjFunc(settingEntitySpacing[7], "ProjFunc.txt");
 
             return Ok();
@@ -288,40 +292,30 @@ namespace ProjetoFinal
             List<string> linhasTabela = new List<string>();
             string test = "";
             var _context = new ProjetoFinalContext();
-            DbSet<ProjetoFuncionario> projetoFuncionarios = _context.funcionariosProjeto;
-            var ordenado = projetoFuncionarios.OrderBy(c => c.idProjeto);
-            var ordenadoDecre = projetoFuncionarios.OrderByDescending(c => c.idProjeto);
-
-            int lastProjetoId = ordenadoDecre.FirstOrDefault()?.idProjeto ?? 0;
-            int lastFuncionarioId = ordenadoDecre.FirstOrDefault()?.idFuncionario ?? 0;
-            int currentEntityIndex = 1;
-            var crr_entity = ordenado.First();
-            if (crr_entity != null)
+            DbSet<ProjetoFuncionario> funcionariosProjeto = _context.funcionariosProjeto;
+            var ordenado = funcionariosProjeto.OrderBy(c => c.idProjeto);
+            foreach (ProjetoFuncionario funcProj in ordenado)
             {
-                int idProj = crr_entity.idProjeto;
-                int idFunc = crr_entity.idFuncionario;
-                while (idProj != lastProjetoId && idFunc != lastFuncionarioId)
+                int idProj = funcProj.idProjeto;
+                int idFunc = funcProj.idFuncionario;
+                if (idProj < 10)
                 {
-                    if (idProj < 10)
-                    {
-                        test += '0';
-                    }
-                    test += idProj;
-                    if (idFunc < 10)
-                    {
-                        test += '0';
-                    }
-                    test += idFunc;
-                    linhasTabela.Add(test);
-                    crr_entity = ordenado.FirstOrDefault(pj => pj.idProjeto == currentEntityIndex);
-                    currentEntityIndex++;
+                    test += '0';
                 }
+                test += idProj;
+                if (idFunc < 10)
+                {
+                    test += '0';
+                }
+                test += idFunc;
+                linhasTabela.Add(test);
+                test = "";
             }
-            linhasTabela.Add(lastProjetoId.ToString() + lastFuncionarioId.ToString());
+
             escreTxtSeq(fileName, linhasTabela);
         }
 
-        private string sqlToTxt<T>(DbContext context, List<int> currentSetting, string fileName) where T : class
+        private string sqlToTxt<T>(DbContext context, List<int> currentSetting, string fileName, int stop) where T : class
         {
             List<string> listaLinhas = new List<string>();
             int lastInt = 1;
@@ -343,13 +337,13 @@ namespace ProjetoFinal
                 var lastEntity = _context.AsEnumerable().OrderByDescending(c => c.GetType().GetProperties().ElementAt(0).GetValue(c)).First();
                 lastInt = Convert.ToInt32(lastEntity.GetType().GetProperties()[0].GetValue(lastEntity));
             }
-            while (currentEntityIndex != lastInt)
+            while (currentEntityIndex != lastInt + 1)
             {
                 var entity = _context.Find(currentEntityIndex);
                 if (entity != null && currentSetting != null)
                 {
                     var props = entity.GetType().GetProperties();
-                    for (int i = 0; i < props.Length - 1; i++)
+                    for (int i = 0; i < stop; i++)
                     {
                         var attributeEntity = props[i];
                         var value = attributeEntity.GetValue(entity);
@@ -378,7 +372,14 @@ namespace ProjetoFinal
                         }
                         else
                         {
-                            test += "null" + new string(' ', currentSetting[i]);
+                            if (currentSetting[i] < 4)
+                            {
+                                test += "00";
+                            }
+                            else
+                            {
+                                test += "null" + new string(' ', currentSetting[i] - 4);
+                            }
                         }
 
                     }
