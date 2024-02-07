@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 
+
 namespace ProjetoFinal
 {
 
@@ -32,7 +33,7 @@ namespace ProjetoFinal
                 {
                     throw new ExceptionCustom("O nome não pode ser nulo ou vazio");
                 }
-                if (!funcionarioValido(responsavel) && funcionarioResponsavelDepartamento(responsavel))
+                if (!funcionarioValido(responsavel) || funcionarioResponsavelDepartamento(responsavel))
                 {
                     throw new ExceptionCustom("O responsável não é válido");
                 }

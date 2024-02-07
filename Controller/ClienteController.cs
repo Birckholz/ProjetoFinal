@@ -171,8 +171,10 @@ namespace ProjetoFinal
                     {
                         if (projeto.idCliente == idCliente)
                         {
+                            if(ClienteNulo!=null){
                             projeto.idCliente = ClienteNulo.codCliente;
                             projeto.descricaoProjeto+=" Cliente: "+ item.nomeCliente;//isso fará com que descrição do projeto tenha o nome do cliente para qual foi feito ,mesmo que ele seja excluido
+                            }
                         }
                     }
                     _context.clientes.Remove(item);

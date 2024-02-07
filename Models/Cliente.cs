@@ -23,9 +23,9 @@ namespace ProjetoFinal
         public string? enderecoCliente { get; set; }
         [MaxLength(100)]
         public string? descricaoCliente { get; set; }
-        [MaxLength(11)]
-        public string? PessFCPFCliente { get; set; }//pessoa física
         [MaxLength(14)]
+        public string? PessFCPFCliente { get; set; }//pessoa física
+        [MaxLength(18)]
         public string? PessJCNPJCliente { get; set; }//pessoa juridica
         [MaxLength(20)]
         public string? statusCliente { get; set; }
