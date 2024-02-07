@@ -45,7 +45,7 @@ namespace ProjetoFinal
             return true;
         }
 
-        [HttpPost("Add/{nome}/{telefone}/{email}/{endereco}/{descricao}/{cpf}/{cnpj}/{status}")]
+        [HttpPost("Add/{nome}/{telefone}/{email}/{endereco}")]//query para opcionais
         public IActionResult postCliente(string nome, string telefone, string email, string endereco, string? descricao, string? cpf, string? cnpj, string? status)
         {
             try
