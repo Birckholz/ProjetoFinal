@@ -10,59 +10,59 @@
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
        SELECT CLIENTES ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           "C:\Users\adria\Downloads\Cliente.txt"
        FILE STATUS IS AS-STATUS-E1.
 
        SELECT CARGOS ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\Cargo.txt'
        FILE STATUS IS AS-STATUS-E2.
 
        SELECT DEPARTAMENTOS ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\Departamento.txt'
        FILE STATUS IS AS-STATUS-E3.
 
        SELECT FUNCIONARIOS ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\Funcionario.txt'
        FILE STATUS IS AS-STATUS-E4.
 
        SELECT PROJETOS ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\Projeto.txt'
        FILE STATUS IS AS-STATUS-E5.
 
        SELECT PROJETOSFUNCIONARIOS ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\ProjFunc.txt'
        FILE STATUS IS AS-STATUS-E6.
 
        SELECT CONTAS ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\Conta.txt'
        FILE STATUS IS AS-STATUS-E7.
 
        SELECT CLIENTES-S ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\cliente1.txt'
        FILE STATUS IS AS-STATUS-S1.
 
        SELECT CARGOS-S ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\cargo1.txt'
        FILE STATUS IS AS-STATUS-S2.
 
        SELECT DEPARTAMENTOS-S ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\departamento1.txt'
        FILE STATUS IS AS-STATUS-S3.
 
        SELECT FUNCIONARIOS-S ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\funcionario1.txt'
        FILE STATUS IS AS-STATUS-S4.
 
        SELECT PROJETOS-S ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           "C:\Users\adria\Downloads\projeto1.txt"
        FILE STATUS IS AS-STATUS-S5.
 
        SELECT PROJETOSFUNCIONARIOS-S ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\adria\Downloads\pj1.txt'
        FILE STATUS IS AS-STATUS-S6.
 
        SELECT CONTAS-S ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\CLIENTE.txt'
+           'C:\Users\CLIENTE\DOWNLOADS\conta1.txt'
        FILE STATUS IS AS-STATUS-S7.
 
 
@@ -75,7 +75,7 @@
 
        01 ARQ-CLIENTES                     PIC X(454).
        01 FILLER REDEFINES ARQ-CLIENTES.
-          05 ARQ-L-ID                      PIC 9(02).
+          05 ARQ-L-ID                      PIC X(02).
           05 ARQ-L-NOME                    PIC X(100).
           05 ARQ-L-TELEFONE                PIC X(50).
           05 ARQ-L-EMAIL                   PIC X(50).
@@ -91,9 +91,9 @@
 
        01 ARQ-CARGOS                       PIC X(62).
        01 FILLER REDEFINES ARQ-CARGOS.
-          05 ARQ-L-ID-CARGO                PIC 9(02).
+          05 ARQ-L-ID-CARGO                PIC X(02).
           05 ARQ-L-NOME-CARGO              PIC X(50).
-          05 ARQ-L-SAL-BASE                PIC 9(10).
+          05 ARQ-L-SAL-BASE                PIC X(10).
 
        FD DEPARTAMENTOS
           RECORDING MODE IS F
@@ -101,9 +101,9 @@
 
        01 ARQ-DEPARTAMENTOS                PIC X(54).
        01 FILLER REDEFINES ARQ-DEPARTAMENTOS.
-          05 ARQ-L-ID-DEP                  PIC 9(02).
+          05 ARQ-L-ID-DEP                  PIC X(02).
           05 ARQ-L-NOME-DEP                PIC X(50).
-          05 ARQ-L-ID-RESPONSAVEL          PIC 9(02).
+          05 ARQ-L-ID-RESPONSAVEL          PIC X(02).
 
        FD FUNCIONARIOS
           RECORDING MODE IS F
@@ -111,9 +111,9 @@
 
        01 ARQ-FUNCIONARIOS                 PIC X(590).
        01 FILLER REDEFINES ARQ-FUNCIONARIOS.
-          05 ARQ-L-ID-FUNC                 PIC 9(02).
-          05 ARQ-L-ID-CARGO-FUNC           PIC 9(02).
-          05 ARQ-L-ID-DEP-FUNC             PIC 9(02).
+          05 ARQ-L-ID-FUNC                 PIC X(02).
+          05 ARQ-L-ID-CARGO-FUNC           PIC X(02).
+          05 ARQ-L-ID-DEP-FUNC             PIC X(02).
           05 ARQ-L-NOME-FUNC               PIC X(100).
           05 ARQ-L-TELEFONE-FUNC           PIC X(50).
           05 ARQ-L-EMAIL-FUNC              PIC X(50).
@@ -130,13 +130,13 @@
 
        01 ARQ-PROJETOS                     PIC X(454).
        01 FILLER REDEFINES ARQ-PROJETOS.
-          05 ARQ-L-ID-PROJETO              PIC 9(02).
-          05 ARQ-L-ID-DEP-PROJETO          PIC 9(02).
-          05 ARQ-L-ID-CLIENTE-PROJ         PIC 9(02).
+          05 ARQ-L-ID-PROJETO              PIC X(02).
+          05 ARQ-L-ID-DEP-PROJETO          PIC X(02).
+          05 ARQ-L-ID-CLIENTE-PROJ         PIC X(02).
           05 ARQ-L-NOME-PROJ               PIC X(100).
           05 ARQ-L-DESCRICAO-PROJ          PIC X(200).
           05 ARQ-L-STATUS-PROJ             PIC X(50).
-          05 ARQ-L-VALOR-PROJ              PIC 9(10).
+          05 ARQ-L-VALOR-PROJ              PIC X(10).
           05 ARQ-L-DATA-ENTREGA-PROJ       PIC X(10).
 
        FD PROJETOSFUNCIONARIOS
@@ -145,8 +145,8 @@
 
        01 ARQ-PROJETOSFUNCIONARIOS         PIC X(04).
        01 FILLER REDEFINES ARQ-PROJETOSFUNCIONARIOS.
-          05 ARQ-L-ID-PROJETO-FUNC-PROJ    PIC 9(02).
-          05 ARQ-L-ID-FUNC-FUNC-PROJ       PIC 9(02).
+          05 ARQ-L-ID-PROJETO-FUNC-PROJ    PIC X(02).
+          05 ARQ-L-ID-FUNC-FUNC-PROJ       PIC X(02).
 
        FD CONTAS
           RECORDING MODE IS F
@@ -154,8 +154,8 @@
 
        01 ARQ-CONTAS                       PIC X(174).
        01 FILLER REDEFINES ARQ-CONTAS.
-          05 ARQ-L-ID-CONTA                PIC 9(02).
-          05 ARQ-L-ID-FUNC-CONTA           PIC 9(02).
+          05 ARQ-L-ID-CONTA                PIC X(02).
+          05 ARQ-L-ID-FUNC-CONTA           PIC X(02).
           05 ARQ-L-AGENCIA-CONTA           PIC X(50).
           05 ARQ-L-NUMERO-CONTA            PIC X(60).
           05 ARQ-L-TIPO-CONTA              PIC X(50).
@@ -230,7 +230,7 @@
        01 CLIENTES-FIELDS.
            05 CLIENTES-ID.
                10 FILLER PIC X(3) VALUE 'ID:'.
-               10 ARQ-S-ID PIC 9(02).
+               10 ARQ-S-ID PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 CLIENTES-NOME.
                10 FILLER PIC X(7) VALUE 'Name:'.
@@ -267,7 +267,7 @@
        01 CARGOS-FIELDS.
            05 CARGOS-ID.
                10 FILLER PIC X(3) VALUE 'ID:'.
-               10 ARQ-S-ID-CARGO PIC 9(02).
+               10 ARQ-S-ID-CARGO PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 CARGOS-NOME.
                10 FILLER PIC X(7) VALUE 'Name:'.
@@ -275,12 +275,12 @@
            05 FILLER PIC X(3) VALUE SPACES.
            05 CARGOS-SAL-BASE.
                10 FILLER PIC X(9) VALUE 'Sal-Base:'.
-               10 ARQ-S-SAL-BASE PIC 9(10).
+               10 ARQ-S-SAL-BASE PIC X(10).
 
        01 DEPARTAMENTOS-FIELDS.
            05 DEPARTAMENTOS-ID.
                10 FILLER PIC X(3) VALUE 'ID:'.
-               10 ARQ-S-ID-DEP PIC 9(02).
+               10 ARQ-S-ID-DEP PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 DEPARTAMENTOS-NOME.
                10 FILLER PIC X(7) VALUE 'Name:'.
@@ -288,20 +288,20 @@
            05 FILLER PIC X(3) VALUE SPACES.
            05 DEPARTAMENTOS-ID-RESPONSAVEL.
                10 FILLER PIC X(15) VALUE 'ID-Responsavel:'.
-               10 ARQ-S-ID-RESPONSAVEL PIC 9(02).
+               10 ARQ-S-ID-RESPONSAVEL PIC X(02).
 
        01 FUNCIONARIOS-FIELDS.
            05 FUNCIONARIOS-ID.
                10 FILLER PIC X(3) VALUE 'ID:'.
-               10 ARQ-S-ID-FUNC PIC 9(02).
+               10 ARQ-S-ID-FUNC PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 FUNCIONARIOS-ID-CARGO.
                10 FILLER PIC X(9) VALUE 'ID-Cargo:'.
-               10 ARQ-S-ID-CARGO-FUNC PIC 9(02).
+               10 ARQ-S-ID-CARGO-FUNC PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 FUNCIONARIOS-ID-DEP.
                10 FILLER PIC X(10) VALUE 'ID-Dep:'.
-               10 ARQ-S-ID-DEP-FUNC PIC 9(02).
+               10 ARQ-S-ID-DEP-FUNC PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 FUNCIONARIOS-NOME.
                10 FILLER PIC X(7) VALUE 'Name:'.
@@ -342,15 +342,15 @@
        01 PROJETOS-FIELDS.
            05 PROJETOS-ID.
                10 FILLER PIC X(3) VALUE 'ID:'.
-               10 ARQ-S-ID-PROJETO PIC 9(02).
+               10 ARQ-S-ID-PROJETO PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 PROJETOS-ID-DEP.
                10 FILLER PIC X(7) VALUE 'ID-Dep:'.
-               10 ARQ-S-ID-DEP-PROJETO PIC 9(02).
+               10 ARQ-S-ID-DEP-PROJETO PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 PROJETOS-ID-CLIENTE.
                10 FILLER PIC X(11) VALUE 'ID-Cliente:'.
-               10 ARQ-S-ID-CLIENTE-PROJ PIC 9(02).
+               10 ARQ-S-ID-CLIENTE-PROJ PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 PROJETOS-NOME.
                10 FILLER PIC X(7) VALUE 'Name:'.
@@ -366,7 +366,7 @@
            05 FILLER PIC X(3) VALUE SPACES.
            05 PROJETOS-VALOR.
                10 FILLER PIC X(6) VALUE 'Valor:'.
-               10 ARQ-S-VALOR-PROJ PIC 9(10).
+               10 ARQ-S-VALOR-PROJ PIC X(10).
            05 FILLER PIC X(3) VALUE SPACES.
            05 PROJETOS-DATA-ENTREGA.
                10 FILLER PIC X(13) VALUE 'Data-Entrega:'.
@@ -375,20 +375,20 @@
        01 PROJETOSFUNCIONARIOS-FIELDS.
            05 PROJETOSFUNCIONARIOS-ID-PROJETO.
                10 FILLER PIC X(11) VALUE 'ID-Projeto:'.
-               10 ARQ-S-ID-PROJETO-FUNC-PROJ PIC 9(02).
+               10 ARQ-S-ID-PROJETO-FUNC-PROJ PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 PROJETOSFUNCIONARIOS-ID-FUNC.
                10 FILLER PIC X(8) VALUE 'ID-Func:'.
-               10 ARQ-S-ID-FUNC-FUNC-PROJ PIC 9(02).
+               10 ARQ-S-ID-FUNC-FUNC-PROJ PIC X(02).
 
        01 CONTAS-FIELDS.
            05 CONTAS-ID.
                10 FILLER PIC X(3) VALUE 'ID:'.
-               10 ARQ-S-ID-CONTA PIC 9(02).
+               10 ARQ-S-ID-CONTA PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 CONTAS-ID-FUNC.
                10 FILLER PIC X(8) VALUE 'ID-Func:'.
-               10 ARQ-S-ID-FUNC-CONTA PIC 9(02).
+               10 ARQ-S-ID-FUNC-CONTA PIC X(02).
            05 FILLER PIC X(3) VALUE SPACES.
            05 CONTAS-AGENCIA.
                10 FILLER PIC X(8) VALUE 'Agencia:'.
