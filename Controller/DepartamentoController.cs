@@ -155,7 +155,7 @@ namespace ProjetoFinal
                                 Cargo cargo = new Cargo()
                                 {
                                     nomeCargo = "Cargo nao definido",
-                                    salarioBase = 0
+                                    salarioBase = 10
                                 };
                                 _context.cargos.Add(cargo);
                                 _context.SaveChanges();
@@ -169,12 +169,12 @@ namespace ProjetoFinal
                                     CPFFuncionario = "000",
                                     emailFuncionario = "000",
                                     enderecoFuncionario = "000",
-                                    formacaoRelevanteFuncionario = null,
+                                    formacaoRelevanteFuncionario = "000",
                                     nomeFuncionario = "Funcionario Nulo",
                                     statusFuncionario = "000",
-                                    modoTrabFuncionario = null,
+                                    modoTrabFuncionario = "000",
                                     telefoneFuncionario = "000",
-                                    tipoContrFuncionario = null
+                                    tipoContrFuncionario = "000"
 
                                 };
                                 _context.funcionarios.Add(funcNulo);
