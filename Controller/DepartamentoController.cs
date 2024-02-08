@@ -155,7 +155,7 @@ namespace ProjetoFinal
                                 Cargo cargo = new Cargo()
                                 {
                                     nomeCargo = "Cargo nao definido",
-                                    salarioBase = 10
+                                    salarioBase = Convert.ToSingle(0.1)
                                 };
                                 _context.cargos.Add(cargo);
                                 _context.SaveChanges();
