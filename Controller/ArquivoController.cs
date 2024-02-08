@@ -285,7 +285,7 @@ namespace ProjetoFinal
             sqlToTxt<Funcionario>(new ProjetoFinalContext(), settingEntitySpacing[5], "Funcionario.txt", 12);
             sqlToTxtProjFunc(settingEntitySpacing[7], "ProjFunc.txt");
 
-            return Ok();
+            return Ok("Arquivo gerados em Downloads");
         }
         private void sqlToTxtProjFunc(List<int> currentSetting, string fileName)
         {

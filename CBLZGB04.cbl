@@ -10,59 +10,59 @@
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
        SELECT CLIENTES ASSIGN TO
-           "C:\Users\adria\Downloads\Cliente.txt"
+           "C:\Users\gui\Downloads\Cliente.txt"
        FILE STATUS IS AS-STATUS-E1.
 
        SELECT CARGOS ASSIGN TO
-           'C:\Users\adria\Downloads\Cargo.txt'
+           'C:\Users\gui\Downloads\Cargo.txt'
        FILE STATUS IS AS-STATUS-E2.
 
        SELECT DEPARTAMENTOS ASSIGN TO
-           'C:\Users\adria\Downloads\Departamento.txt'
+           'C:\Users\gui\Downloads\Departamento.txt'
        FILE STATUS IS AS-STATUS-E3.
 
        SELECT FUNCIONARIOS ASSIGN TO
-           'C:\Users\adria\Downloads\Funcionario.txt'
+           'C:\Users\gui\Downloads\Funcionario.txt'
        FILE STATUS IS AS-STATUS-E4.
 
        SELECT PROJETOS ASSIGN TO
-           'C:\Users\adria\Downloads\Projeto.txt'
+           'C:\Users\gui\Downloads\Projeto.txt'
        FILE STATUS IS AS-STATUS-E5.
 
        SELECT PROJETOSFUNCIONARIOS ASSIGN TO
-           'C:\Users\adria\Downloads\ProjFunc.txt'
+           'C:\Users\gui\Downloads\ProjFunc.txt'
        FILE STATUS IS AS-STATUS-E6.
 
        SELECT CONTAS ASSIGN TO
-           'C:\Users\adria\Downloads\Conta.txt'
+           'C:\Users\gui\Downloads\Conta.txt'
        FILE STATUS IS AS-STATUS-E7.
 
        SELECT CLIENTES-S ASSIGN TO
-           'C:\Users\adria\Downloads\cliente1.txt'
+           'C:\Users\gui\Downloads\cliente1.txt'
        FILE STATUS IS AS-STATUS-S1.
 
        SELECT CARGOS-S ASSIGN TO
-           'C:\Users\adria\Downloads\cargo1.txt'
+           'C:\Users\gui\Downloads\cargo1.txt'
        FILE STATUS IS AS-STATUS-S2.
 
        SELECT DEPARTAMENTOS-S ASSIGN TO
-           'C:\Users\adria\Downloads\departamento1.txt'
+           'C:\Users\gui\Downloads\departamento1.txt'
        FILE STATUS IS AS-STATUS-S3.
 
        SELECT FUNCIONARIOS-S ASSIGN TO
-           'C:\Users\adria\Downloads\funcionario1.txt'
+           'C:\Users\gui\Downloads\funcionario1.txt'
        FILE STATUS IS AS-STATUS-S4.
 
        SELECT PROJETOS-S ASSIGN TO
-           "C:\Users\adria\Downloads\projeto1.txt"
+           "C:\Users\gui\Downloads\projeto1.txt"
        FILE STATUS IS AS-STATUS-S5.
 
        SELECT PROJETOSFUNCIONARIOS-S ASSIGN TO
-           'C:\Users\adria\Downloads\pj1.txt'
+           'CC:\Users\gui\Downloads\pj1.txt'
        FILE STATUS IS AS-STATUS-S6.
 
        SELECT CONTAS-S ASSIGN TO
-           'C:\Users\CLIENTE\DOWNLOADS\conta1.txt'
+           'C:\Users\gui\Downloads\conta1.txt'
        FILE STATUS IS AS-STATUS-S7.
 
 
@@ -230,7 +230,7 @@
        01 CLIENTES-FIELDS.
            05 CLIENTES-ID.
                10 FILLER PIC X(3) VALUE 'ID:'.
-               10 ARQ-S-ID PIC X(02).
+               10 ARQ-S-ID PIC X(100).
            05 FILLER PIC X(3) VALUE SPACES.
            05 CLIENTES-NOME.
                10 FILLER PIC X(7) VALUE 'Name:'.
@@ -408,7 +408,7 @@
            PERFORM 3000-FINALIZAR.
 
        1000-INICIALIZAR        SECTION.
-           READ CLIENTES.
+      *>      READ CLIENTES.
            IF AS-STATUS-E1 NOT EQUALS ZEROS
                DISPLAY 'ARQUIVO VAZIO'
                MOVE 'S' TO AS-FIM1
@@ -466,7 +466,7 @@
            OPEN OUTPUT PROJETOSFUNCIONARIOS-S.
            OPEN OUTPUT CONTAS-S.
 
-       1000-INICILIZAR-FIM.
+       1000-INICIALIZAR-FIM.
            EXIT.
 
        2000-PROCESSAR          SECTION.
@@ -483,180 +483,214 @@
            EXIT.
 
        2100-PROCESSAR-CLIENTES SECTION.
+           READ-CLIENTES.
+               READ CLIENTES
+               AT END
+                   DISPLAY 'ARQUIVO VAZIO'
+                   MOVE 'S' TO AS-FIM1
+               NOT AT END
+                   PERFORM PROCESS-RECORD
+               END-READ.
 
-           IF AS-STATUS-E1 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-E1
-           END-IF.
+           PROCESS-RECORD.
+               MOVE ARQ-L-ID TO ARQ-S-ID
+               MOVE ARQ-L-NOME TO ARQ-S-NOME
+               MOVE ARQ-L-STATUS TO ARQ-S-STATUS
+               MOVE ARQ-L-TELEFONE TO ARQ-S-TELEFONE
+               MOVE ARQ-L-EMAIL TO ARQ-S-EMAIL
+               MOVE ARQ-L-ENDERECO TO ARQ-S-ENDERECO
+               MOVE ARQ-L-DESCRICAO TO ARQ-S-DESCRICAO
+               MOVE ARQ-L-CPF TO ARQ-S-CPF
+               MOVE ARQ-L-CNPJ TO ARQ-S-CNPJ
 
-           IF AS-STATUS-S1 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-S1
-           END-IF.
+               MOVE CLIENTES-FIELDS TO ARQ-CLIENTE-S
 
-           MOVE ARQ-L-ID TO ARQ-S-ID
-           MOVE ARQ-L-NOME TO ARQ-S-NOME
-           MOVE ARQ-L-STATUS TO ARQ-S-STATUS
-           MOVE ARQ-L-TELEFONE TO ARQ-S-TELEFONE
-           MOVE ARQ-L-EMAIL TO ARQ-S-EMAIL
-           MOVE ARQ-L-ENDERECO TO ARQ-S-ENDERECO
-           MOVE ARQ-L-DESCRICAO TO ARQ-S-DESCRICAO
-           MOVE ARQ-L-CPF TO ARQ-S-CPF
-           MOVE ARQ-L-CNPJ TO ARQ-S-CNPJ
+               WRITE ARQ-CLIENTE-S.
+               READ CLIENTES
+                   AT END
+                   MOVE 'S' TO AS-FIM1
+               END-READ.
+               PERFORM READ-CLIENTES.
 
-           MOVE CLIENTES-FIELDS TO ARQ-CLIENTE-S
-
-
-
-           WRITE ARQ-CLIENTE-S.
+           EXIT.   
 
        2100-PROCESSAR-CLIENTES-FIM.
            EXIT.
 
        2200-PROCESSAR-CARGOS SECTION.
+           READ CARGOS
+           AT END
+               DISPLAY 'ARQUIVO VAZIO'
+               MOVE 'S' TO AS-FIM2
+           NOT AT END
+               PERFORM PROCESSAR-CARGOS
+           END-READ.
 
-           IF AS-STATUS-S2 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-E2
-           END-IF.
+           PROCESSAR-CARGOS.
+               MOVE ARQ-L-ID-CARGO   TO ARQ-S-ID-CARGO
+               MOVE ARQ-L-NOME-CARGO TO ARQ-S-NOME-CARGO
+               MOVE ARQ-L-SAL-BASE   TO ARQ-S-SAL-BASE
+               MOVE CARGOS-FIELDS    TO ARQ-CARGO-S
+               WRITE ARQ-CARGO-S.
 
+           READ CARGOS
+           AT END
+               MOVE 'S' TO AS-FIM2
+           END-READ.
 
-
-           MOVE ARQ-L-ID-CARGO   TO ARQ-S-ID-CARGO
-           MOVE ARQ-L-NOME-CARGO TO ARQ-S-NOME-CARGO
-           MOVE ARQ-L-SAL-BASE   TO ARQ-S-SAL-BASE
-           MOVE CARGOS-FIELDS    TO ARQ-CARGO-S
-
-
-           IF AS-STATUS-S2 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-S2
-           END-IF.
-           WRITE ARQ-CARGO-S.
+           EXIT.
 
        2200-PROCESSAR-CARGOS-FIM.
            EXIT.
 
        2300-PROCESSAR-DEPARTAMENTO SECTION.
-
-           IF AS-STATUS-S3 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-E3
-           END-IF.
-
-
-
-           MOVE ARQ-L-ID-DEP         TO ARQ-S-ID-DEP
-           MOVE ARQ-L-NOME-DEP       TO ARQ-S-NOME-DEP
-           MOVE ARQ-L-ID-RESPONSAVEL TO ARQ-S-ID-RESPONSAVEL
-
-
-           IF AS-STATUS-S3 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-S3
-           END-IF.
-
-           WRITE ARQ-DEPARTAMENTO-S.
+           READ DEPARTAMENTOS
+           AT END
+               DISPLAY 'ARQUIVO VAZIO'
+               MOVE 'S' TO AS-FIM3
+           NOT AT END
+               PERFORM PROCESSAR-DEPARTAMENTO
+           END-READ.
+               
+           PROCESSAR-DEPARTAMENTO.
+               MOVE ARQ-L-ID-DEP         TO ARQ-S-ID-DEP
+               MOVE ARQ-L-NOME-DEP       TO ARQ-S-NOME-DEP
+               MOVE ARQ-L-ID-RESPONSAVEL TO ARQ-S-ID-RESPONSAVEL
+               WRITE ARQ-DEPARTAMENTO-S.
+           READ DEPARTAMENTOS
+           AT END
+               MOVE 'S' TO AS-FIM3
+           END-READ.
+           EXIT.
 
        2300-PROCESSAR-DEPARTAMENTO-FIM.
            EXIT.
 
        2400-PROCESSAR-FUNCIONARIOS SECTION.
+           READ CARGOS
+           AT END
+               DISPLAY 'ARQUIVO VAZIO'
+               MOVE 'S' TO AS-FIM4
+           NOT AT END
+               PERFORM PROCESSAR-FUNCIONARIOS
+           END-READ.
+               
+           PROCESSAR-FUNCIONARIOS.
+               MOVE ARQ-L-ID-FUNC TO ARQ-S-ID-FUNC
+               MOVE ARQ-L-ID-CARGO-FUNC TO ARQ-S-ID-CARGO-FUNC
+               MOVE ARQ-L-ID-DEP-FUNC   TO ARQ-S-ID-DEP-FUNC
+               MOVE ARQ-L-NOME-FUNC     TO ARQ-S-NOME-FUNC
+               MOVE ARQ-L-TELEFONE-FUNC TO ARQ-S-TELEFONE-FUNC
+               MOVE ARQ-L-EMAIL-FUNC    TO ARQ-S-EMAIL-FUNC
+               MOVE ARQ-L-ENDERECO-FUNC TO ARQ-S-ENDERECO-FUNC
+               MOVE ARQ-L-CPF-FUNC      TO ARQ-S-CPF-FUNC
+               MOVE ARQ-L-TIPO-CONTRATO TO ARQ-S-TIPO-CONTRATO
+               MOVE ARQ-L-MODO-TRAB     TO ARQ-S-MODO-TRAB
+               MOVE ARQ-L-FORMACAO      TO ARQ-S-FORMACAO
+               MOVE ARQ-L-STATUS-FUNC   TO ARQ-S-STATUS-FUNC
 
-           IF AS-STATUS-S4 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-E4
-           END-IF.
+               MOVE FUNCIONARIOS-FIELDS TO ARQ-FUNCIONARIO-S
 
 
-
-           MOVE ARQ-L-ID-FUNC TO ARQ-S-ID-FUNC
-           MOVE ARQ-L-ID-CARGO-FUNC TO ARQ-S-ID-CARGO-FUNC
-           MOVE ARQ-L-ID-DEP-FUNC   TO ARQ-S-ID-DEP-FUNC
-           MOVE ARQ-L-NOME-FUNC     TO ARQ-S-NOME-FUNC
-           MOVE ARQ-L-TELEFONE-FUNC TO ARQ-S-TELEFONE-FUNC
-           MOVE ARQ-L-EMAIL-FUNC    TO ARQ-S-EMAIL-FUNC
-           MOVE ARQ-L-ENDERECO-FUNC TO ARQ-S-ENDERECO-FUNC
-           MOVE ARQ-L-CPF-FUNC      TO ARQ-S-CPF-FUNC
-           MOVE ARQ-L-TIPO-CONTRATO TO ARQ-S-TIPO-CONTRATO
-           MOVE ARQ-L-MODO-TRAB     TO ARQ-S-MODO-TRAB
-           MOVE ARQ-L-FORMACAO      TO ARQ-S-FORMACAO
-           MOVE ARQ-L-STATUS-FUNC   TO ARQ-S-STATUS-FUNC
-
-           MOVE FUNCIONARIOS-FIELDS TO ARQ-FUNCIONARIO-S
-
-
-           IF AS-STATUS-S4 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-E4
-           END-IF.
-           WRITE ARQ-FUNCIONARIO-S.
+           
+               WRITE ARQ-FUNCIONARIO-S.
+               READ FUNCIONARIOS
+                   AT END
+                   MOVE 'S' TO AS-FIM4
+               END-READ.
+           EXIT.
+           
+          
+         
 
        2400-PROCESSAR-FUNCIONARIOS-FIM.
            EXIT.
 
        2500-PROCESSAR-PROJETOS SECTION.
+           READ PROJETOS
+           AT END
+               DISPLAY 'ARQUIVO VAZIO'
+               MOVE 'S' TO AS-FIM5
+           NOT AT END
+               PERFORM PROCESSAR-FUNCIONARIOS
+           END-READ.
 
-           IF AS-STATUS-E5 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-E5
-           END-IF.
+           PROCESSAR-PROJETOS.
+               MOVE ARQ-L-ID-PROJETO TO ARQ-S-ID-PROJETO
+               MOVE ARQ-L-ID-DEP-PROJETO TO ARQ-S-ID-DEP-PROJETO
+               MOVE ARQ-L-ID-CLIENTE-PROJ TO ARQ-S-ID-CLIENTE-PROJ
+               MOVE ARQ-L-NOME-PROJ TO ARQ-S-NOME-PROJ
+               MOVE ARQ-L-DESCRICAO-PROJ TO ARQ-S-DESCRICAO-PROJ
+               MOVE ARQ-L-STATUS-PROJ    TO ARQ-S-STATUS-PROJ
+               MOVE ARQ-L-VALOR-PROJ     TO ARQ-S-VALOR-PROJ
+               MOVE ARQ-L-DATA-ENTREGA-PROJ TO ARQ-S-DATA-ENTREGA-PROJ
 
+               MOVE PROJETOS-FIELDS TO ARQ-PROJETO-S
+               WRITE ARQ-PROJETO-S.
+               
 
-
-           MOVE ARQ-L-ID-PROJETO TO ARQ-S-ID-PROJETO
-           MOVE ARQ-L-ID-DEP-PROJETO TO ARQ-S-ID-DEP-PROJETO
-           MOVE ARQ-L-ID-CLIENTE-PROJ TO ARQ-S-ID-CLIENTE-PROJ
-           MOVE ARQ-L-NOME-PROJ TO ARQ-S-NOME-PROJ
-           MOVE ARQ-L-DESCRICAO-PROJ TO ARQ-S-DESCRICAO-PROJ
-           MOVE ARQ-L-STATUS-PROJ    TO ARQ-S-STATUS-PROJ
-           MOVE ARQ-L-VALOR-PROJ     TO ARQ-S-VALOR-PROJ
-           MOVE ARQ-L-DATA-ENTREGA-PROJ TO ARQ-S-DATA-ENTREGA-PROJ
-
-           MOVE PROJETOS-FIELDS TO ARQ-PROJETO-S
-
-
-           IF AS-STATUS-S5 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-S5
-           END-IF.
-           WRITE ARQ-PROJETO-S.
+               READ PROJETOS
+                   AT END
+                   MOVE 'S' TO AS-FIM5
+               END-READ.
+           EXIT.
+           
 
        2500-PROCESSAR-PROJETOS-FIM.
            EXIT.
 
        2600-PROCESSAR-PROJFUNC SECTION.
+           READ PROJETOSFUNCIONARIOS
+           AT END
+               DISPLAY 'ARQUIVO VAZIO'
+               MOVE 'S' TO AS-FIM6
+           NOT AT END
+               PERFORM PROCESSAR-PROJFUNC
+           END-READ.
 
-           IF AS-STATUS-E6 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-E6
-           END-IF.
-
-
-
-           MOVE ARQ-L-ID-PROJETO-FUNC-PROJ TO ARQ-S-ID-PROJETO-FUNC-PROJ
-           MOVE ARQ-L-ID-FUNC-FUNC-PROJ    TO ARQ-S-ID-FUNC-FUNC-PROJ
-
-           MOVE PROJETOSFUNCIONARIOS-FIELDS TO
+           PROCESSAR-PROJFUNC.
+               MOVE ARQ-L-ID-PROJETO-FUNC-PROJ  TO
+                                              ARQ-S-ID-PROJETO-FUNC-PROJ
+               MOVE ARQ-L-ID-FUNC-FUNC-PROJ     TO 
+                                              ARQ-S-ID-FUNC-FUNC-PROJ
+               MOVE PROJETOSFUNCIONARIOS-FIELDS TO
                                               ARQ-PROJETOSFUNCIONARIOS-S
-
-           IF AS-STATUS-S6 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-S6
-           END-IF.
-           WRITE ARQ-PROJETOSFUNCIONARIOS-S.
+               WRITE ARQ-PROJETOSFUNCIONARIOS-S.
+           
+               READ PROJETOSFUNCIONARIOS
+                   AT END
+                   MOVE 'S' TO AS-FIM6
+               END-READ.
+           EXIT.
 
        2600-PROCESSAR-PROJFUNC-FIM.
            EXIT.
 
        2700-PROCESSAR-CONTAS SECTION.
+           READ CONTAS
+           AT END
+               DISPLAY 'ARQUIVO VAZIO'
+               MOVE 'S' TO AS-FIM7
+           NOT AT END
+               PERFORM PROCESSAR-PROJFUNC
+           END-READ.
 
-           IF AS-STATUS-E7 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-E7
-           END-IF.
-
-
-
-           MOVE ARQ-L-ID-CONTA        TO ARQ-S-ID-CONTA
-           MOVE ARQ-L-ID-FUNC-CONTA   TO ARQ-S-ID-FUNC-CONTA
-           MOVE ARQ-L-AGENCIA-CONTA   TO ARQ-S-AGENCIA-CONTA
-           MOVE ARQ-L-NUMERO-CONTA    TO ARQ-S-NUMERO-CONTA
-           MOVE ARQ-L-TIPO-CONTA      TO ARQ-S-TIPO-CONTA
-
-           MOVE CONTAS-FIELDS TO ARQ-CONTA-S
-
-           IF AS-STATUS-S7 NOT EQUALS ZEROS
-               DISPLAY 'ERROS NO OPEN' AS-STATUS-S7
-           END-IF.
-           WRITE ARQ-CONTA-S.
+           PROCESSAR-CONTAS.
+               
+               MOVE ARQ-L-ID-CONTA        TO ARQ-S-ID-CONTA
+               MOVE ARQ-L-ID-FUNC-CONTA   TO ARQ-S-ID-FUNC-CONTA
+               MOVE ARQ-L-AGENCIA-CONTA   TO ARQ-S-AGENCIA-CONTA
+               MOVE ARQ-L-NUMERO-CONTA    TO ARQ-S-NUMERO-CONTA
+               MOVE ARQ-L-TIPO-CONTA      TO ARQ-S-TIPO-CONTA
+           
+               MOVE CONTAS-FIELDS TO ARQ-CONTA-S
+               WRITE ARQ-CONTA-S.
+           
+               READ PROJETOSFUNCIONARIOS
+                   AT END
+                   MOVE 'S' TO AS-FIM6
+               END-READ.
+           EXIT.
 
        2700-PROCESSAR-CONTAS-FIM.
            EXIT.
