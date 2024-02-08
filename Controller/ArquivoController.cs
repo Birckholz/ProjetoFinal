@@ -362,11 +362,19 @@ namespace ProjetoFinal
                                 {
                                     usoComparar = currentSetting[i];
                                 }
-                                if (tamValue != usoComparar)
+                                if (usoComparar = 2 && valueString.Length < 2)
                                 {
-                                    int numEspacos = usoComparar - tamValue;
-                                    valueString += new string(' ', numEspacos);
+                                    valueString = "0" + valueString;
                                 }
+                                else
+                                {
+                                    if (tamValue != usoComparar)
+                                    {
+                                        int numEspacos = usoComparar - tamValue;
+                                        valueString += new string(' ', numEspacos);
+                                    }
+                                }
+
                                 test += valueString;
                             }
                         }
