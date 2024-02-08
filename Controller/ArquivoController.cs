@@ -287,7 +287,6 @@ namespace ProjetoFinal
 
             return Ok();
         }
-        //pergunta, por que nao usa o [1]?
         private void sqlToTxtProjFunc(List<int> currentSetting, string fileName)
         {
             List<string> linhasTabela = new List<string>();
@@ -335,7 +334,7 @@ namespace ProjetoFinal
             int ogNumEnt = currentEntityIndex;
             if (_context.Count() != 0)
             {
-                var lastEntity = _context.AsEnumerable().OrderByDescending(c => c.GetType().GetProperties().ElementAt(0).GetValue(c)).First();
+                var lastEntity = _context.AsEnumerable().OrderByDescending(c => c.GetType().GetProperties()[0].GetValue(c)).First();
                 lastInt = Convert.ToInt32(lastEntity.GetType().GetProperties()[0].GetValue(lastEntity));
             }
             while (currentEntityIndex != lastInt + 1)
