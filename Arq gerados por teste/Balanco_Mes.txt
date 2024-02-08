@@ -1,0 +1,12 @@
+____________________________________EMPRESA ____________________________________
+Relatório dos gastos e ganhos previstos para o mes:
+Projetos a serem finalizados nesse mês : 
+Código do projeto: 2        Nome do projeto: Projeto2        Cliente: 2
+Status: Em andamento        Data de entrega: 2/25/2024
+Pagamentos a serem feitos nesse mês : 
+Código do funcionário: 1        Nome do cargo: Cargo 1        Salário : 10000
+Código do funcionário: 2        Nome do cargo: Cargo 2        Salário : 2000
+Código do funcionário: 3        Nome do cargo: Cargo 3        Salário : 3000
+Valor arrecadado: 100000
+Valor a ser pago em salários: 15000
+Lucro: 85000

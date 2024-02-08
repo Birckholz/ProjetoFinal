@@ -1,0 +1,12 @@
+____________________________________EMPRESA ____________________________________
+Relatório dos projetos de cada departamento:
+
+DEPARTAMENTO : 3----->Dep 3
+Código do projeto: 1        Nome do projeto: Projeto1        Cliente: 1
+Status: Finalizado        Data de entrega: 3/1/2023
+DEPARTAMENTO : 2----->Dep 2
+Código do projeto: 2        Nome do projeto: Projeto2        Cliente: 2
+Status: Em andamento        Data de entrega: 2/25/2024
+DEPARTAMENTO : 3----->Dep 3
+Código do projeto: 3        Nome do projeto: Projeto3        Cliente: 3
+Status: Em andamento        Data de entrega: 3/12/2024
