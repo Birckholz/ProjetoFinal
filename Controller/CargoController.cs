@@ -105,7 +105,7 @@ namespace ProjetoFinal
                     //quero que os funcionarios fiquem com um cargo nulo, depois pode-se modificar para colocar o novo cargo ao qual vão pertencer
                     if (cargoNulo == null)
                     {//se não existe ou foi excluido
-                        postCargo("Cargo nao definido", 10);
+                        postCargo("Cargo nao definido", Convert.ToSingle(0.1));
                         cargoNulo = _context.cargos.FirstOrDefault(x => x.nomeCargo == "Cargo nao definido");//procura novamente
                     }
                     var item = _context.cargos.FirstOrDefault(y => y.codCargo == idCargo);
