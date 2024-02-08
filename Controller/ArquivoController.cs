@@ -362,7 +362,7 @@ namespace ProjetoFinal
                                 {
                                     usoComparar = currentSetting[i];
                                 }
-                                if (usoComparar = 2 && valueString.Length < 2)
+                                if (usoComparar == 2 && valueString.Length < 2)
                                 {
                                     valueString = "0" + valueString;
                                 }
